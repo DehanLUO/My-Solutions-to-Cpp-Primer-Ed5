@@ -1,0 +1,16 @@
+/*
+ * Exercise 1.17: What happens in the program presented in this section if the
+ * input values are all equal? What if there are no duplicated values?
+ */
+
+/*
+ * 1. All input values equal:
+ * The `else` branch in the `while` loop is never executed. The loop continues
+ * until input ends, and the final output statement prints the single unique
+ * value and its total count.
+ *
+ * 2. No duplicated values:
+ * The `if` branch in the `while` loop is never executed. For each value, the
+ * `else` branch runs, printing the value and a count of `1`. After the loop
+ * ends, the final output prints the last value (again) with a count of `1`.
+ */

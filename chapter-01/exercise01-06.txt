@@ -1,0 +1,23 @@
+/*
+ * Exercise 1.6: Explain whether the following program fragment is legal.
+ * std::cout << "The sum of " << v1;
+ *           << " and " << v2;
+ *           << " is " << v1 + v2 << std::endl;
+ * If the program is legal, what does it do? If the program is not legal, why
+ * not? How would you fix it?
+ */
+
+/*
+ * The given code fragment is not legal. The semicolons at the end of the first
+ * two lines terminate the statements, making the second and the third lines
+ * into new statements. However, these lines begin with the output operator `<<`
+ * without specifying an output stream object.
+ *
+ * To fix this, we need to add `std::out` before each `<<` opeator on the
+ * continud lines, or better yet, write the entire output as a single statement
+ * without intermediate semicolons. The correct version woule be:
+ *
+ * std::cout << "The sum of " << v1
+ *           << " and " << v2
+ *           << " is " << v1 + v2 << std::endl;
+ */
