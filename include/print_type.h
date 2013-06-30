@@ -4,6 +4,7 @@
 #include <cxxabi.h>  // abi::__cxa_demangle
 
 #include <iostream>  // std::cout
+#include <string>    // std::string
 
 /**
  * @brief Retrieves human-readable type name by demangling compiler-encoded type
@@ -30,7 +31,7 @@ std::string GetTypeName() {
   char* demangled = abi::__cxa_demangle(raw_name, nullptr, nullptr, &status);
 
   // Step 3: Return demangled name if successful, otherwise fallback
-  std::string result = (status == 0 && demangled) ? demangled : raw_name;
+  std::string result = (0 == status && demangled) ? demangled : raw_name;
 
   // Step 4: Free demangler-allocated memory
   std::free(demangled);
