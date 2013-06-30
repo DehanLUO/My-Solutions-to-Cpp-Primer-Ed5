@@ -1,0 +1,22 @@
+/*
+ * Exercise 2.1: What are the differences between int, long, long long, and
+ * short? Between an unsigned and a signed type? Between a float and a double?
+ */
+
+/*
+ * Differences between `int`, `long`, `long long`, and `short`:
+ * - `short`: Typically 16 bits, smallest integer range [-2^{15},2^{15}-1]
+ * - `int`: Usually 32 bits, common default for integer [-2^{31},2^{31}-1]
+ * - `long`: At least 32 bits, sometimes 64 bits (system-dependent)
+ * - `long long`: Guaranteed 64 bits, largest range [-2^{63},2^{63}-1]
+ *
+ * Signed vs. Unsigned:
+ * - Signed: Can represent negative and positive numbers.
+ * - Unsigned: Only non-negative numbers. Doubles the positive range. e.g.,
+ *   unsigned short range [0, 2^{16}-1]
+ *
+ * `float` vs `double`:
+ * - `float`: 32-bit floating-point (~7 decimal digits precision)
+ * - `double`: 64-bit floating-point (~15 decimal digits precision), preferred
+ *   for higher precision
+ */

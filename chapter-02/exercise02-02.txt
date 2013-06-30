@@ -1,0 +1,20 @@
+/*
+ * Exercise 2.2: To calculate a mortgage payment, what types would you use for
+ * the rate, principal, and payment? Explain why you selected each type.
+ */
+
+/*
+ * To calculate a mortgage payment in a banking system, **precision** is more
+ * important than convenience. Since floating-point types like `float` and
+ * `double` can introduce rounding errors, they should be avoided in financial
+ * calculations. Instead, we can use **integer types**, such as `long long`, to
+ * represent all monetary values in the smallest currency unit, such as cents or
+ * even smaller.
+ *
+ * We store the interest rate as a **scaled integer**, For example, instrad of
+ * representing 3.75% as 0.0375, we store it as 3750, assuming five decimal
+ * places of precision (i.e., 3750 means 0.0375). When calculating interest, we
+ * must scale accordingly (e.g., divide by 100000) to recover the actual rate
+ * during arithmetic. This avoids the use of floating-point types and maintains
+ * exact precision.
+ */
