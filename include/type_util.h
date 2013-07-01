@@ -80,19 +80,33 @@ struct TypeName<void> {
  * @brief Recursively decomposes and prints types with qualifiers
  * @tparam T Type to print
  *
- * Processing Order:
- * 1. Pointers (handles nested pointers and pointer const)
- * 2. Non-pointer const qualifiers
- * 3. Base types (via TypeName)
+ * Processing Order (Critical for correct output):
+ * 1. References (must come first to prevent misclassification)
+ * 2. Pointers (handles nested pointers and pointer const)
+ * 3. Non-pointer const qualifiers
+ * 4. Base types (via TypeName)
  *
- * Const Handling:
- * - For non-pointers: Prints as "base_type const"
- * - For pointers: Const qualifiers on pointee are printed before '*'
- * - Pointer-level const is printed after '*' when present
+ * Qualifier Handling:
+ * - References: Printed as suffix '&' after base type
+ * - Pointers:
+ *   * Ptr-to-const shows const before '*' (e.g. 'int const*')
+ *   * Const-ptr shows const after '*' (e.g. 'int* const')
+ * - Non-pointer const: Always printed as suffix 'const'
+ *
+ * @note Reference handling must precede pointer/const checks to maintain
+ *       C++ type system semantics
  */
 template <typename T>
 struct TypePrinter {
   static void Print() {
+    // Process reference types first - they have highest syntactic precedence
+    if (std::is_reference<T>::value) {
+      using NonRefType = typename std::remove_reference<T>::type;
+      // Recursively print the referenced type (may have other qualifiers)
+      TypePrinter<NonRefType>::Print();
+      std::cout << " &";  // Append reference symbol
+      return;  // Early return - references can't have additional qualifiers
+    }
     // Handle pointer types first (including multi-level pointers)
     if (std::is_pointer<T>::value) {
       using PointeeType = typename std::remove_pointer<T>::type;
@@ -104,18 +118,20 @@ struct TypePrinter {
       if (std::is_const<T>::value) {
         std::cout << " const";
       }
+      return;
     }
-    // Handle non-pointer const types
-    else if (std::is_const<T>::value) {
+
+    // Process non-pointer const types (references already handled)
+    if (std::is_const<T>::value) {
       using NonConstType = typename std::remove_const<T>::type;
       // Print base type first then add const qualifier
       TypePrinter<NonConstType>::Print();
-      std::cout << " const";
+      std::cout << " const";  // Always suffix for consistency
+      return;
     }
-    // Base case: non-pointer, non-const type
-    else {
-      std::cout << TypeName<T>::Get();
-    }
+
+    // Base case - print fundamental/plain type name
+    std::cout << TypeName<T>::Get();
   }
 };
 
