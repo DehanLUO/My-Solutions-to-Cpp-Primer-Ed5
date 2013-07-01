@@ -163,31 +163,98 @@ void PrintTypeInfo(const char* var_name) {
   std::cout << std::endl;
 }
 
+/**
+ * @brief Trait to detect if a type T supports output streaming (operator<<)
+ * @tparam T Type to check
+ *
+ * Detection mechanism:
+ * - Uses SFINAE and decltype to test if std::ostream << T is valid
+ * - If valid, Test<T>(0) resolves to std::true_type
+ * - Otherwise, falls back to std::false_type
+ *
+ * Usage:
+ *   HasInsertionOperator<T>::kValue evaluates to true if T can be streamed
+ */
+template <typename T>
+class HasInsertionOperator {
+ private:
+  // Preferred overload: succeeds if 'std::cout << U' is valid
+  template <typename U>
+  static auto Test(int)
+      -> decltype(std::declval<std::ostream&>() << std::declval<U>(),
+                  std::true_type());
+
+  // Fallback overload: selected if preferred fails
+  template <typename>
+  static std::false_type Test(...);
+
+ public:
+  // Result: true if insertion operator is supported
+  static constexpr bool kValue = decltype(Test<T>(0))::value;
+};
+
+/**
+ * @brief Attempts to print the value of a variable if it supports operator<<
+ * @tparam T Type of the variable
+ * @param var The variable to print
+ *
+ * Enabled only if T supports insertion into std::ostream
+ * Used in conjunction with SFINAE and HasInsertionOperator
+ */
+template <typename T>
+typename std::enable_if<HasInsertionOperator<T>::kValue>::type
+PrintValueIfPossible(const T& var) {
+  std::cout << var;
+}
+
+/**
+ * @brief Fallback when the type does not support operator<<
+ * @tparam T Type of the variable
+ * @param var The variable (unused)
+ *
+ * Prints placeholder text instead of value
+ */
+template <typename T>
+typename std::enable_if<!HasInsertionOperator<T>::kValue>::type
+PrintValueIfPossible(const T&) {
+  std::cout << "<value not printable>";
+}
+
 }  // namespace typeutil
 
 /**
- * @brief Macro to print variable name and its type
- * @param var Variable to inspect (name and type)
+ * @brief Macro to print variable name, value (if printable), and its type
+ * @param var Variable to inspect
+ *
+ * Output Format:
+ *   [var_name] : [value or <value not printable>] | type: [human-readable type]
  *
  * Example:
  *   PRINT_VAR_TYPE(my_var);
- *   Output: "my_var : int const *"
+ *   Output: "my_var: 42 | type: int"
  *
  * Implementation:
- * 1. Stringizes variable name with #
- * 2. Uses decltype to get variable's type
- * 3. Wraps in do-while(0) for statement safety
+ * 1. Uses #var to stringify the variable name
+ * 2. Uses decltype to deduce its type
+ * 3. Uses PrintValueIfPossible() to safely print value
+ *    - Outputs actual value if operator<< is defined
+ *    - Otherwise prints "<value not printable>"
+ * 4. Uses PrintType() to print demangled, human-readable type
+ * 5. Wraps entire logic in do-while(0) to ensure macro safety
  */
-#define PRINT_VAR_TYPE(var)                        \
-  do {                                             \
-    std::cout << #var << ": " << var << "|type: "; \
-    typeutil::PrintType<decltype(var)>();          \
-    std::cout << std::endl;                        \
+#define PRINT_VAR_TYPE(var)               \
+  do {                                    \
+    std::cout << #var << ": ";            \
+    typeutil::PrintValueIfPossible(var);  \
+    std::cout << " | type: ";             \
+    typeutil::PrintType<decltype(var)>(); \
+    std::cout << std::endl;               \
   } while (0)
 
 #endif  // INCLUDE_TYPE_UTIL_H_
 
 /*
+ * const int variable_a = 0;
  * PRINT_VAR_TYPE(variable_a);  // int const
  *
  * const int* const variable_b = &variable_a;

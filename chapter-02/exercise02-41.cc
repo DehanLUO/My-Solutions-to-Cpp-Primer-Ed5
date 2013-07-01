@@ -8,7 +8,7 @@
 
 #include "exercise02-40.h"  // Sales_data
 
-int exercise_1_20() {
+int ExerciseC1E20() {
   Sales_data book;
 
   std::cout << "Enter sales data: \n";
@@ -20,7 +20,7 @@ int exercise_1_20() {
   return 0;
 }
 
-int exercise_1_21() {
+int ExerciseC1E21() {
   Sales_data sales_data_a;
   Sales_data sales_data_b;
 
@@ -41,7 +41,7 @@ int exercise_1_21() {
   return 0;
 }
 
-int exercise_1_22() {
+int ExerciseC1E22() {
   Sales_data total;
   Sales_data sales_data;
 
@@ -68,7 +68,7 @@ int exercise_1_22() {
   return 0;
 }
 
-int exercise_1_23_and_1_24() {
+int ExerciseC1E23AndC1E24() {
   Sales_data sales_base;  // Holds the current ISBN group to compare against
 
   std::cout << "Enter some sales records:\n";
@@ -99,7 +99,7 @@ int exercise_1_23_and_1_24() {
   return 0;
 }
 
-int exercise_1_25() {
+int ExerciseC1E25() {
   Sales_data total;  // variable to hold data for the next transaction
   // read the first transaction and ensure that there are data to process
   if (total.Input()) {
@@ -128,15 +128,15 @@ int exercise_1_25() {
 }
 
 int main() {
-  exercise_1_20();
+  ExerciseC1E20();
 
-  exercise_1_21();
+  ExerciseC1E21();
 
-  exercise_1_22();
+  ExerciseC1E22();
 
-  exercise_1_23_and_1_24();
+  ExerciseC1E23AndC1E24();
 
-  exercise_1_25();
+  ExerciseC1E25();
 
   return 0;
 }

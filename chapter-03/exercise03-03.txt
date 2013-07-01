@@ -1,0 +1,14 @@
+/*
+ * Exercise 3.3: Explain how whitespace characters are handled in the string
+ * input operator and in the getline function.
+ */
+
+/*
+ * `>>` string input operator
+ * - Skips leading whitespace
+ * - Stops reading at the next whitespace character
+ *
+ * `getline`
+ * - Reads all characters until a delimiter (default '\n') is encountered
+ * - The delimiter is removed from the stream but not stored in the string
+ */
