@@ -7,29 +7,29 @@
  *     (d) 10, 10u, 10., 10e-2
  */
 
-#include "../include/print_type.h"
+#include "../include/type_util.h"
 
 int main() {
-  PRINT_TYPE('a');   // char
-  PRINT_TYPE(L'a');  // wchar_t
-  PRINT_TYPE("a");   // char const*
-  PRINT_TYPE(L"a");  // wchar_t const*
+  PRINT_VAR_TYPE('a');   // char
+  PRINT_VAR_TYPE(L'a');  // wchar_t
+  PRINT_VAR_TYPE("a");   // char const*
+  PRINT_VAR_TYPE(L"a");  // wchar_t const*
 
-  PRINT_TYPE(10);    // int
-  PRINT_TYPE(10u);   // unsigned int
-  PRINT_TYPE(10L);   // long
-  PRINT_TYPE(10uL);  // unsigned long
-  PRINT_TYPE(012);   // int, octal
-  PRINT_TYPE(0xC);   // int, hexadecimal
+  PRINT_VAR_TYPE(10);    // int
+  PRINT_VAR_TYPE(10u);   // unsigned int
+  PRINT_VAR_TYPE(10L);   // long
+  PRINT_VAR_TYPE(10uL);  // unsigned long
+  PRINT_VAR_TYPE(012);   // int, octal
+  PRINT_VAR_TYPE(0xC);   // int, hexadecimal
 
-  PRINT_TYPE(3.14);   // double
-  PRINT_TYPE(3.14f);  // float
-  PRINT_TYPE(3.14L);  // long double
+  PRINT_VAR_TYPE(3.14);   // double
+  PRINT_VAR_TYPE(3.14f);  // float
+  PRINT_VAR_TYPE(3.14L);  // long double
 
-  PRINT_TYPE(10);     // int
-  PRINT_TYPE(10u);    // unsigned int
-  PRINT_TYPE(10.);    // double 10
-  PRINT_TYPE(10e-2);  // double 0.1
+  PRINT_VAR_TYPE(10);     // int
+  PRINT_VAR_TYPE(10u);    // unsigned int
+  PRINT_VAR_TYPE(10.);    // double 10
+  PRINT_VAR_TYPE(10e-2);  // double 0.1
 
   return 0;
 }
