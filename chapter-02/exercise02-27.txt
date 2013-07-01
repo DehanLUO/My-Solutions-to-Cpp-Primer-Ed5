@@ -1,0 +1,38 @@
+/*
+ * Exercise 2.27: Which of the following initializations are legal? Explain why.
+ *     (a) int i = -1, &r = 0;                 (b) int *const p2 = &i2;
+ *     (c) const int i = -1, &r = 0;           (d) const int *const p3 = &i2;
+ *     (e) const int *p1 = &i2;                (f) const int &const r2;
+ *     (g) const int i2 = i, &r = i;
+ */
+
+/*
+ * (a) int i = -1, &r = 0;
+ * Illegal. `i` is an int. `r` is a reference to int. But it tries to bind a
+ * non-const lvalue reference (int&) to an rvalue (0).
+ *
+ * (b) int *const p2 = &i2;
+ * Legal. `p2` is a const pointer to `int`. `&i2` is a lvalue (address of `i2`),
+ * valid for initialization.
+ *
+ * (c) const int i = -1, &r = 0;
+ * Legal. `i` is a const int initialized with -1. `const int& r` can bind to an
+ * rvalue (0), extending the temporary's lifetime.
+ *
+ * (d) const int *const p3 = &i2;
+ * Legal. `p3` is a const pointer to const int. `&i2` is a lvalue (address of
+ * `i2`), valid for initialization.
+ *
+
+ * (e) const int *p1 = &i2;
+ * Legal. `p1` is a pointer to const int. pointer-to-const can point to const or
+ * non-const objects. `&i2` is a lvalue, valid for initialization.
+ *
+ * (f) const int &const r2;
+ * Illegal. `r2` is a const reference to const int. It cannot be declare without
+ *initialization.
+ *
+ * (g) const int i2 = i, &r = i;
+ * Legal. `i2` is a const int initialized with i. `r` is a reference binds to
+ *the lvalue `i`.
+ */

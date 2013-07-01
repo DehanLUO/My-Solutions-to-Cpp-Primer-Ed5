@@ -1,0 +1,31 @@
+/*
+ * Exercise 2.30: For each of the following declarations indicate whether the
+ * object being declared has top-level or low-level const.
+ *     const int v2 = 0;
+ *     int v1 = v2;
+ *     int *p1 = &v1, &r1 = v1;
+ *     const int *p2 = &v2, *const p3 = &i, &r2 = v2;
+ */
+
+int main() {
+  const int v2 = 0;  // top-level const
+
+  int v1 = v2;  // ok: top-level const in `v2` is ignored.
+
+  /*
+   * `p1` is a non-const pointer to int. `v1` yields an int, so `&v1` is an int*
+   * (rvalue). Non-const pointer allows reassignment and value modification.
+   * `r1` is a reference to int, and `v1` yields an int (lvalue). `r1` is a
+   * reference binds to the lvalue `v1`.
+   */
+  int *p1 = &v1, &r1 = v1;
+
+  /*
+   * p2 has a low-level const.
+   * p3 has a right-most top-level const and a left-most low-level const.
+   * r2 has a low-level const.
+   */
+  // const int *p2 = &v2, *const p3 = &i, &r2 = v2;
+
+  return 0;
+}

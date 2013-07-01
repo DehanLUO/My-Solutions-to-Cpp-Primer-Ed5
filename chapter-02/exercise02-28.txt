@@ -1,0 +1,28 @@
+/*
+ * Exercise 2.28: Explain the following definitions. Identify any that are
+ * illegal.
+ *     (a) int i, *const cp;               (b) int *p1, *const p2;
+ *     (c) const int ic, &r = ic;          (d) const int *const p3;
+ *     (e) const int *p;
+ */
+
+/*
+ * (a) int i, *const cp;
+ * Illegal. `i` is an int. `cp` is a const pointer to int. It cannot be declared
+ * without initialization.
+ *
+ * (b) int *p1, *const p2;
+ * Illegal. `p1` is a pointer to int. `p2` is a const pointer to int. It cannot
+ * be declared without initialization.
+ *
+ * (c) const int ic, &r = ic;
+ * Illegal. `ic` is a const int. It cannot be declared with initialization. `r`
+ * is a reference binds to the lvalue `ic`.
+ *
+ * (d) const int *const p3;
+ * Illegal. `p3` is a const pointer to const int. It cannot be declared without
+ * initialization.
+ *
+ * (e) const int *p;
+ * Legal. `p` is a point to const int.
+ */

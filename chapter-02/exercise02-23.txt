@@ -1,0 +1,19 @@
+/*
+ * Exercise 2.23: Given a pointer p, can you determine whether p points to a
+ * valid object? If so, how? If not, why not?
+ */
+
+/*
+ * You cannot reliably determine whether a pointer points to a valid object just
+ * from the pointer value itself.
+ *
+ * c++ does not provide built-in runtime mechanisms to track the validity of a
+ * pointer. A pointer is just a memory address, and:
+ * - That memory might be valid or not.
+ * - It might point to a deallocated object (dangling pointer).
+ * - It might point to a memory region that is not owned by your program,
+ *   causing undefined behavior if accessd.
+ * - It might point to valid memory but not to a properly constructed object.
+ *
+ * What you can check for nullptr with `p != nullptr`
+ */

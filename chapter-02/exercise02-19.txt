@@ -1,0 +1,16 @@
+/*
+ * Exercise 2.19: Explain the key differences between pointers and references.
+ */
+
+/*
+ * 1. Nullability: Pointers can bu nullptr/NULL. Reference (lvalue reference)
+ * must refer to a valid object.
+ * 2. Reassignment: Pointers can be reassigned to point to different objects.
+ * References cannot be reseated once bound.
+ * 3. Syntax: Use `*` to declare/dereference a pointer, and `&` to get
+ * an address. Use `&` to declare a reference, but no special syntax to use it.
+ * 4. Initialization: Pointers can be declared without initialization.
+ * References must be initialized when declared.
+ * 5. Memory semantics: Pointers are actual variables that hold addresses.
+ * References are alias; they typically do not occupy their own storage.
+ */

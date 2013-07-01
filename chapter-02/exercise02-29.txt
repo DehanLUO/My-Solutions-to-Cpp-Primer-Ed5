@@ -1,0 +1,34 @@
+/*
+ * Exercise 2.29: Uing the variables in the previous exercise, which of the
+ * following assignments are legal? Explain why.
+ *     (a) i = ic;                               (b) p1 = p3;
+ *     (c) p1 = &ic;                             (d) p3 = &ic;
+ *     (e) p2 = p1;                              (f) ic = *p3;
+ */
+
+/*
+ * (a) i = ic;
+ * Legal. `ic` is a const int, but reading its rvalue is permitted. The rvalue
+ * of `ic` is copied to the non-const int `i`.
+ *
+ * (b) p1 = p3;
+ * Illegal. `p3` is a const pointer point to const int. `p1` is a pointer to
+ * non-const. Assigning a pointer-to-const to a pointer-to-non-const would allow
+ * modifying const data through `p1`, violating const correctness.
+ *
+ * (c) p1 = &ic;
+ * Illegal. `ic` is a const int, so `&ic` is const int*. `p1` is a pointer to
+ * non-const int. Same issue as (b).
+ *
+ * (d) p3 = &ic;
+ * Illegal. `p3` is a const pointer point to const int. Reassigning `p3` is
+ * forbidden.
+ *
+ * (e) p2 = p1;
+ * Illegal. `p2` is a const pointer to int. Same issue as (d).
+ *
+ * (f) ic = *p3;
+ * Illegal. `ic` is const int and cannot be modified. `p3` reads the const int
+ * pointed to by `p3`, but reassigning to `ic` violates const.
+ *
+ */
