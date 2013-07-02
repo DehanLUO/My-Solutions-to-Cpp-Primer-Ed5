@@ -36,21 +36,21 @@ int main() {
 
 /*
  * $ g++ -o main exercise-05.cc && ./main
- * 'a'=a |type: char
- * L'a'=97 |type: wchar_t
- * "a"=a |type: const char[2] &  //! Array-to-Pointer Decay
- * L"a"=0x107def600 |type: const wchar_t[2] &  //! Array-to-Pointer Decay
- * 10=10 |type: int
- * 10u=10 |type: unsigned
- * 10L=10 |type: long
- * 10uL=10 |type: unsigned long
- * 012=10 |type: int
- * 0xC=12 |type: int
- * 3.14=3.14 |type: double
- * 3.14f=3.14 |type: float
- * 3.14L=3.14 |type: long double
- * 10=10 |type: int
- * 10u=10 |type: unsigned
- * 10.=10 |type: double
- * 10e-2=0.1 |type: double
+ * 'a': a |type: char
+ * L'a': 97 |type: wchar_t
+ * "a": [a, \0] |type: const char[2] & //! Array-to-Pointer Decay
+ * L"a": [a, \0] |type: const wchar_t[2] & //! Array-to-Pointer Decay
+ * 10: 10 |type: int
+ * 10u: 10 |type: unsigned
+ * 10L: 10 |type: long
+ * 10uL: 10 |type: unsigned long
+ * 012: 10 |type: int
+ * 0xC: 12 |type: int
+ * 3.14: 3.14 |type: double
+ * 3.14f: 3.14 |type: float
+ * 3.14L: 3.14 |type: long double
+ * 10: 10 |type: int
+ * 10u: 10 |type: unsigned
+ * 10.: 10 |type: double
+ * 10e-2: 0.1 |type: double
  */

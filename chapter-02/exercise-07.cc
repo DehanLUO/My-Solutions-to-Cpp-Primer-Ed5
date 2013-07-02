@@ -23,9 +23,8 @@ int main() {
 
 /*
  * $ g++ -o main exercise-07.cc && ./main
- * "Who goes with F\145rgus?\012"=Who goes with Fergus?
- *  |type: const char[23] &
- * 3.14e1L=31.4 |type: long double
- * 1024.f=1024 |type: float
- * 3.14L=3.14 |type: long double
+ * "Who goes with F\145rgus?\012": [W, h, o,  , g, o, e, s,  , w, i, t, h,  , F, e, r, g, u, s, ?, \n, \0] |type: const char[23] &
+ * 3.14e1L: 31.4 |type: long double
+ * 1024.f: 1024 |type: float
+ * 3.14L: 3.14 |type: long double
  */

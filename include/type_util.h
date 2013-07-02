@@ -29,6 +29,7 @@
  */
 
 #include <array>     // std::array
+#include <codecvt>   // std::wstring_convert, std::codecvt_utf8
 #include <iostream>  // std::cout
 #include <list>      // std::list
 #include <map>       // std::map
@@ -42,6 +43,10 @@
 #endif
 
 namespace typeutil {
+
+/*
+ * Basic Utility Functions
+ */
 
 /**
  * @brief Demangles a compiler-generated type name if possible.
@@ -85,9 +90,94 @@ inline std::string Demangle(const char* mangled) {
   return mangled ? mangled : "";
 }
 
-// Forward declaration for TypePrinter template
-template <typename T>
-struct TypePrinter;
+/**
+ * @brief Helper function to convert a character to its escaped representation
+ * @param ch The character to convert
+ * @return std::string with escaped representation
+ */
+inline std::string EscapeChar(char ch) {
+  switch (ch) {
+    case '\0':
+      return "\\0";
+    case '\n':
+      return "\\n";
+    case '\t':
+      return "\\t";
+    case '\r':
+      return "\\r";
+    case '\"':
+      return "\\\"";
+    case '\\':
+      return "\\\\";
+    default:
+      return std::string(1, ch);
+  }
+}
+
+/**
+ * @brief Helper function to convert a wide character to its escaped
+ * representation
+ * @param wch The wide character to convert
+ * @return std::string with escaped representation
+ */
+inline std::string EscapeWChar(wchar_t wch) {
+  switch (wch) {
+    case L'\0':
+      return "\\0";
+    case L'\n':
+      return "\\n";
+    case L'\t':
+      return "\\t";
+    case L'\r':
+      return "\\r";
+    case L'\"':
+      return "\\\"";
+    case L'\\':
+      return "\\\\";
+    default: {
+      // Convert non-special wide characters to UTF-8
+      std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+      try {
+        // Attempt UTF-8 conversion of the wide character
+        return converter.to_bytes(wch);
+      } catch (...) {
+        // Fallback for conversion failures (invalid wide char)
+        return "?";
+      }
+    }
+  }
+}
+
+/**
+ * @brief Helper function to output escaped characters with array formatting
+ * @param ch The character to output
+ * @param is_first Whether this is the first element in array (modified by
+ * reference)
+ */
+inline void OutputEscapedChar(char ch, bool& is_first) {
+  if (!is_first) {
+    std::cout << ", ";
+  }
+  is_first = false;
+  std::cout << EscapeChar(ch);
+}
+
+/**
+ * @brief Helper function to escape special characters in a string
+ * @param str The string to process
+ * @return String with escaped special characters
+ */
+inline std::string EscapeString(const std::string& str) {
+  std::string result;
+  for (char ch : str) {
+    result += EscapeChar(ch);
+  }
+  return result;
+}
+
+/*
+ * Core Type Name Handling
+ */
 
 /**
  * @brief Retrieves the human-readable name of a type.
@@ -107,155 +197,7 @@ struct TypeName {
   static std::string Get() { return '(' + Demangle(typeid(T).name()) + ')'; }
 };
 
-// ===== ARRAY AND CONST-QUALIFIED TYPE HANDLING =====
-// These specializations must appear after the primary template but before other
-// specializations (like pointers/references) to ensure proper matching
-// priority.
-
-/**
- * @brief Specialization for constant character arrays (string literals).
- *
- * This handles C-style string literals like "hello" which have type const
- * char[N].
- *
- * Rationale:
- * - String literals are fundamental in C++ and deserve explicit formatting
- * - We want to clearly distinguish between mutable and literal strings
- * - The standard mandates that string literals are const-qualified
- *
- * @tparam N The array size including null terminator
- * @return Formatted type name (e.g., "const char[6]" for "hello")
- */
-template <size_t N>
-struct TypeName<const char[N]> {
-  static std::string Get() { return "const char[" + std::to_string(N) + "]"; }
-};
-
-/**
- * @brief Specialization for wide character string literals (const wchar_t[N]).
- *
- * Handles wide string literals like L"text" similarly to narrow strings.
- *
- * Rationale:
- * - Wide strings are used in internationalization and Windows programming
- * - They follow the same const qualification rules as char strings
- * - Explicit specialization prevents ambiguity with regular arrays
- *
- * @tparam N The array size including null terminator
- * @return Formatted type name (e.g., "const wchar_t[3]" for L"hi")
- */
-template <size_t N>
-struct TypeName<const wchar_t[N]> {
-  static std::string Get() {
-    return "const wchar_t[" + std::to_string(N) + "]";
-  }
-};
-
-/**
- * @brief Specialization for regular arrays of any type (T[N]).
- *
- * Handles all array types except those already specialized above.
- *
- * Rationale:
- * - Arrays decay to pointers in most contexts but we want to preserve size info
- * - The standard format Type[size] matches declaration syntax
- * - Specializing separately from pointers maintains type system accuracy
- *
- * Implementation Notes:
- * - Recursively gets the base type name (T) then appends dimensions
- * - Handles multi-dimensional arrays naturally (e.g., int[3][4])
- *
- * @tparam T The array element type
- * @tparam N The array size
- * @return Formatted type name (e.g., "int[5]" or "float[2][3]")
- */
-template <typename T, size_t N>
-struct TypeName<T[N]> {
-  static std::string Get() {
-    return TypeName<T>::Get() + "[" + std::to_string(N) + "]";
-  }
-};
-
-// Specializations for type qualifiers and pointers/references
-
-/**
- * @brief Specialization for const-qualified types.
- *
- * Handles all const-qualified types with special consideration for array types.
- *
- * Design Rationale:
- * - Proper const qualification is fundamental to C++'s type system
- * - Arrays require distinct handling because:
- *   - The const qualifier applies to elements, not the array itself
- *   - Array dimensions must be preserved in the type name
- * - Maintains consistency with declaration syntax (e.g., "const int[5]")
- *
- * Implementation Details:
- * 1. Type classification:
- *    - Uses std::is_array to detect array types
- *    - Non-arrays receive straightforward const qualification
- *
- * 2. Array handling:
- *    - Extracts the underlying type using std::remove_extent
- *    - Preserves array size information using std::extent
- *    - Formats as "const BaseType[size]" to reflect actual semantics
- *
- * 3. Non-array handling:
- *    - Appends " const" to maintain natural reading order
- *    - Matches how const appears in variable declarations
- *
- * Template Metaprogramming Notes:
- * - std::is_array<T>::value provides array detection
- * - std::remove_extent<T>::type yields the element type
- * - std::extent<T>::value retrieves the array dimension
- * - All operations are evaluated at compile-time
- *
- * @tparam T The base type being qualified (may be array or non-array)
- * @return Properly formatted type name with const qualification
- */
-template <typename T>
-struct TypeName<const T> {
-  static std::string Get() {
-    // Handle array types differently than non-array types
-    if (std::is_array<T>::value) {
-      // Get the base type without array dimensions
-      typedef typename std::remove_extent<T>::type BaseType;
-      // Get the array size (works for single-dimension arrays)
-      size_t size = std::extent<T>::value;
-      return "const " + TypeName<BaseType>::Get() + "[" + std::to_string(size) +
-             "]";
-    } else {
-      // Non-array types: simply append const
-      return TypeName<T>::Get() + " const";
-    }
-  }
-};
-
-/**
- * @brief Specialization for pointer types
- */
-template <typename T>
-struct TypeName<T*> {
-  static std::string Get() { return TypeName<T>::Get() + " *"; }
-};
-
-/**
- * @brief Specialization for lvalue reference types
- */
-template <typename T>
-struct TypeName<T&> {
-  static std::string Get() { return TypeName<T>::Get() + " &"; }
-};
-
-/**
- * @brief Specialization for rvalue reference types
- */
-template <typename T>
-struct TypeName<T&&> {
-  static std::string Get() { return TypeName<T>::Get() + " &&"; }
-};
-
-// Fundamental type specializations with explicit Canadian spelling
+// Fundamental type specializations
 
 /**
  * @brief Specialization for void type
@@ -354,6 +296,154 @@ struct TypeName<std::string> {
   static std::string Get() { return "std::string"; }
 };
 
+// Specializations for Compound Types
+
+/**
+ * @brief Specialization for const-qualified types.
+ *
+ * Handles all const-qualified types with special consideration for array types.
+ *
+ * Design Rationale:
+ * - Proper const qualification is fundamental to C++'s type system
+ * - Arrays require distinct handling because:
+ *   - The const qualifier applies to elements, not the array itself
+ *   - Array dimensions must be preserved in the type name
+ * - Maintains consistency with declaration syntax (e.g., "const int[5]")
+ *
+ * Implementation Details:
+ * 1. Type classification:
+ *    - Uses std::is_array to detect array types
+ *    - Non-arrays receive straightforward const qualification
+ *
+ * 2. Array handling:
+ *    - Extracts the underlying type using std::remove_extent
+ *    - Preserves array size information using std::extent
+ *    - Formats as "const BaseType[size]" to reflect actual semantics
+ *
+ * 3. Non-array handling:
+ *    - Appends " const" to maintain natural reading order
+ *    - Matches how const appears in variable declarations
+ *
+ * Template Metaprogramming Notes:
+ * - std::is_array<T>::value provides array detection
+ * - std::remove_extent<T>::type yields the element type
+ * - std::extent<T>::value retrieves the array dimension
+ * - All operations are evaluated at compile-time
+ *
+ * @tparam T The base type being qualified (may be array or non-array)
+ * @return Properly formatted type name with const qualification
+ */
+template <typename T>
+struct TypeName<const T> {
+  static std::string Get() {
+    // Handle array types differently than non-array types
+    if (std::is_array<T>::value) {
+      // Get the base type without array dimensions
+      typedef typename std::remove_extent<T>::type BaseType;
+      // Get the array size (works for single-dimension arrays)
+      size_t size = std::extent<T>::value;
+      return "const " + TypeName<BaseType>::Get() + "[" + std::to_string(size) +
+             "]";
+    } else {
+      // Non-array types: simply append const
+      return TypeName<T>::Get() + " const";
+    }
+  }
+};
+
+/**
+ * @brief Specialization for pointer types
+ */
+template <typename T>
+struct TypeName<T*> {
+  static std::string Get() { return TypeName<T>::Get() + " *"; }
+};
+
+/**
+ * @brief Specialization for lvalue reference types
+ */
+template <typename T>
+struct TypeName<T&> {
+  static std::string Get() { return TypeName<T>::Get() + " &"; }
+};
+
+/**
+ * @brief Specialization for rvalue reference types
+ */
+template <typename T>
+struct TypeName<T&&> {
+  static std::string Get() { return TypeName<T>::Get() + " &&"; }
+};
+
+// ===== ARRAY AND CONST-QUALIFIED TYPE HANDLING =====
+// These specializations must appear after the primary template but before other
+// specializations (like pointers/references) to ensure proper matching
+// priority.
+
+/**
+ * @brief Specialization for constant character arrays (string literals).
+ *
+ * This handles C-style string literals like "hello" which have type const
+ * char[N].
+ *
+ * Rationale:
+ * - String literals are fundamental in C++ and deserve explicit formatting
+ * - We want to clearly distinguish between mutable and literal strings
+ * - The standard mandates that string literals are const-qualified
+ *
+ * @tparam N The array size including null terminator
+ * @return Formatted type name (e.g., "const char[6]" for "hello")
+ */
+template <size_t N>
+struct TypeName<const char[N]> {
+  static std::string Get() { return "const char[" + std::to_string(N) + "]"; }
+};
+
+/**
+ * @brief Specialization for wide character string literals (const wchar_t[N]).
+ *
+ * Handles wide string literals like L"text" similarly to narrow strings.
+ *
+ * Rationale:
+ * - Wide strings are used in internationalization and Windows programming
+ * - They follow the same const qualification rules as char strings
+ * - Explicit specialization prevents ambiguity with regular arrays
+ *
+ * @tparam N The array size including null terminator
+ * @return Formatted type name (e.g., "const wchar_t[3]" for L"hi")
+ */
+template <size_t N>
+struct TypeName<const wchar_t[N]> {
+  static std::string Get() {
+    return "const wchar_t[" + std::to_string(N) + "]";
+  }
+};
+
+/**
+ * @brief Specialization for regular arrays of any type (T[N]).
+ *
+ * Handles all array types except those already specialized above.
+ *
+ * Rationale:
+ * - Arrays decay to pointers in most contexts but we want to preserve size info
+ * - The standard format Type[size] matches declaration syntax
+ * - Specializing separately from pointers maintains type system accuracy
+ *
+ * Implementation Notes:
+ * - Recursively gets the base type name (T) then appends dimensions
+ * - Handles multi-dimensional arrays naturally (e.g., int[3][4])
+ *
+ * @tparam T The array element type
+ * @tparam N The array size
+ * @return Formatted type name (e.g., "int[5]" or "float[2][3]")
+ */
+template <typename T, size_t N>
+struct TypeName<T[N]> {
+  static std::string Get() {
+    return TypeName<T>::Get() + "[" + std::to_string(N) + "]";
+  }
+};
+
 // STL container specializations
 
 /**
@@ -403,6 +493,212 @@ struct TypeName<std::map<K, V>> {
   }
 };
 
+/*
+ * Type Printing Capability Detection
+ */
+
+/**
+ * @brief Trait to detect whether a type supports output streaming
+ * (`operator<<`).
+ *
+ * @tparam T The type to check.
+ *
+ * Usage:
+ * ```cpp
+ * static_assert(HasInsertionOperator<std::string>::kValue);
+ * static_assert(!HasInsertionOperator<std::vector<int>>::kValue);
+ * ```
+ */
+template <typename T>
+class HasInsertionOperator {
+ private:
+  /**
+   * @brief Test function that checks for operator<< support
+   * @return std::true_type if operator<< exists, otherwise substitution fails
+   */
+  template <typename U>
+  static auto Test(int)
+      -> decltype(std::declval<std::ostream&>() << std::declval<U>(),
+                  std::true_type());
+
+  /**
+   * @brief Fallback test function that always matches
+   * @return std::false_type
+   */
+  template <typename>
+  static std::false_type Test(...);
+
+ public:
+  /// Boolean value indicating whether T supports operator<<
+  static constexpr bool kValue = decltype(Test<T>(0))::value;
+};
+
+/*
+ * Value Printing Logic
+ */
+
+/**
+ * @brief Prints a value to `std::cout` if `operator<<` is supported.
+ * @note Special handling for pointer types to avoid printing raw addresses
+ */
+template <typename T>
+typename std::enable_if<HasInsertionOperator<T>::kValue  //
+                        && !std::is_array<T>::value      //
+                        && !std::is_pointer<T>::value>::type
+PrintValueIfPossible(const T& var) {
+  std::cout << var;  // Print the value using operator<<
+}
+
+/**
+ * @brief Specialization for std::string to handle array-style output
+ */
+template <>
+void PrintValueIfPossible<std::string>(const std::string& var) {
+  std::cout << EscapeString(var);
+}
+
+/**
+ * @brief Prints a character array in [elem, elem, ...] format with proper
+ * escaping
+ *
+ * Outputs all elements of the character array including null terminators,
+ * with special characters escaped. Maintains standard array formatting.
+ *
+ * @tparam N Size of the character array (automatically deduced)
+ * @param arr Reference to the character array
+ *
+ * @note Null terminators are displayed as "\0"
+ */
+template <size_t N>
+void PrintValueIfPossible(const char (&arr)[N]) {
+  std::cout << '[';      // Open array bracket
+  bool is_first = true;  // Track first element for comma placement
+
+  // Iterate through all array elements (including null terminators)
+  for (size_t i = 0; i < N; ++i) {
+    if (!is_first) {
+      std::cout << ", ";  // Add separator before all elements except first
+    }
+    is_first = false;
+
+    // Output properly escaped character representation
+    std::cout << EscapeChar(arr[i]);
+  }
+
+  std::cout << ']';  // Close array bracket
+}
+
+/**
+ * @brief Prints a wide character array in [elem, elem, ...] format with UTF-8
+ * encoding
+ *
+ * Outputs all elements of the wide character array including null terminators,
+ * with special characters escaped and proper Unicode conversion.
+ *
+ * @tparam N Size of the wide character array (automatically deduced)
+ * @param arr Reference to the wide character array
+ *
+ * @note Null terminators are displayed as "\0"
+ * @note Non-ASCII characters are converted to UTF-8
+ */
+template <size_t N>
+void PrintValueIfPossible(const wchar_t (&arr)[N]) {
+  std::cout << '[';      // Open array bracket
+  bool is_first = true;  // Track first element for comma placement
+
+  // Iterate through all array elements (including null terminators)
+  for (size_t i = 0; i < N; ++i) {
+    if (!is_first) {
+      std::cout << ", ";  // Add separator before all elements except first
+    }
+    is_first = false;
+
+    // Convert wide character to escaped UTF-8 representation
+    std::string escaped = EscapeWChar(arr[i]);
+
+    // Output the complete escaped character sequence
+    std::cout << escaped;
+  }
+
+  std::cout << ']';  // Close array bracket
+}
+
+/**
+ * @brief Specialization for arrays
+ */
+template <typename T, size_t N>
+typename std::enable_if<
+    !std::is_same<typename std::remove_cv<T>::type, char>::value &&
+    !std::is_same<typename std::remove_cv<T>::type, wchar_t>::value &&
+    HasInsertionOperator<T>::kValue>::type
+PrintValueIfPossible(const T (&arr)[N]) {
+  std::cout << '[';
+  for (size_t i = 0; i < N; ++i) {
+    if (i != 0) std::cout << ", ";
+    PrintValueIfPossible(arr[i]);
+  }
+  std::cout << ']';
+}
+
+/**
+ * @brief Specialized handler for arrays of types that cannot be printed
+ * directly.
+ *
+ * This function template is triggered for arrays of types that:
+ * 1. Are NOT character arrays (neither char nor wchar_t)
+ * 2. Do NOT have an available stream insertion operator (operator<<)
+ *
+ * Instead of attempting to print the array elements (which would fail), it
+ * outputs a descriptive placeholder showing the array type and size in the
+ * format:
+ *   [<array of TYPE_NAME>]
+ *
+ * Examples of types that would trigger this version:
+ * - Arrays of custom structs/classes without operator<<
+ * - Arrays of STL containers without operator<< specialization
+ * - Arrays of function pointers
+ * - Arrays of complex nested types
+ *
+ * @tparam T The element type of the array (automatically deduced)
+ * @tparam N The size of the array (automatically deduced)
+ * @param arr The array reference to process
+ *
+ * @note This is a fallback handler that ensures type safety when printing
+ * arrays. It prevents compilation errors while still providing useful type
+ * information.
+ * @see HasInsertionOperator for the streamability detection mechanism
+ */
+template <typename T, size_t N>
+typename std::enable_if<
+    !std::is_same<typename std::remove_cv<T>::type, char>::value &&
+    !std::is_same<typename std::remove_cv<T>::type, wchar_t>::value &&
+    !HasInsertionOperator<T>::kValue>::type
+PrintValueIfPossible(const T (&arr)[N]) {
+  std::cout << "[<array of " << TypeName<T>::Get() << ">]";
+}
+
+/**
+ * @brief Specialization for pointer types
+ */
+template <typename T>
+typename std::enable_if<std::is_pointer<T>::value>::type PrintValueIfPossible(
+    const T& var) {
+  std::cout << '(' << var << ')';  // Generic pointer representation
+}
+
+/**
+ * @brief Fallback printer for unprintable types (no `operator<<` defined).
+ */
+template <typename T>
+typename std::enable_if<!HasInsertionOperator<T>::kValue>::type
+PrintValueIfPossible(const T&) {
+  std::cout << "<unprintable>";
+}
+
+/*
+ * Type Printing Interfaces
+ */
+
 /**
  * @brief Internal helper that prints the type of T using TypeName<T>.
  *
@@ -451,70 +747,9 @@ void PrintTypeInfo(const char* var_name) {
   std::cout << '\n';
 }
 
-/**
- * @brief Trait to detect whether a type supports output streaming
- * (`operator<<`).
- *
- * @tparam T The type to check.
- *
- * Usage:
- * ```cpp
- * static_assert(HasInsertionOperator<std::string>::kValue);
- * static_assert(!HasInsertionOperator<std::vector<int>>::kValue);
- * ```
+/*
+ *Type Size Information
  */
-template <typename T>
-class HasInsertionOperator {
- private:
-  /**
-   * @brief Test function that checks for operator<< support
-   * @return std::true_type if operator<< exists, otherwise substitution fails
-   */
-  template <typename U>
-  static auto Test(int)
-      -> decltype(std::declval<std::ostream&>() << std::declval<U>(),
-                  std::true_type());
-
-  /**
-   * @brief Fallback test function that always matches
-   * @return std::false_type
-   */
-  template <typename>
-  static std::false_type Test(...);
-
- public:
-  /// Boolean value indicating whether T supports operator<<
-  static constexpr bool kValue = decltype(Test<T>(0))::value;
-};
-
-/**
- * @brief Prints a value to `std::cout` if `operator<<` is supported.
- * @note Special handling for pointer types to avoid printing raw addresses
- */
-template <typename T>
-typename std::enable_if<HasInsertionOperator<T>::kValue &&
-                        !std::is_pointer<T>::value>::type
-PrintValueIfPossible(const T& var) {
-  std::cout << '=' << var;  // Print the value using operator<<
-}
-
-/**
- * @brief Specialization for pointer types
- */
-template <typename T>
-typename std::enable_if<std::is_pointer<T>::value>::type PrintValueIfPossible(
-    const T& var) {
-  std::cout << '(' << var << ')';  // Generic pointer representation
-}
-
-/**
- * @brief Fallback printer for unprintable types (no `operator<<` defined).
- */
-template <typename T>
-typename std::enable_if<!HasInsertionOperator<T>::kValue>::type
-PrintValueIfPossible(const T&) {
-  std::cout << "<unprintable>";
-}
 
 /**
  * @brief Provides compile-time size information for types
@@ -574,7 +809,7 @@ void PrintTypeSize() {
  */
 #define PRINT_VAR_TYPE(var)               \
   do {                                    \
-    std::cout << #var;                    \
+    std::cout << #var << ": ";            \
     typeutil::PrintValueIfPossible(var);  \
     std::cout << " |type: ";              \
     typeutil::PrintType<decltype(var)>(); \
