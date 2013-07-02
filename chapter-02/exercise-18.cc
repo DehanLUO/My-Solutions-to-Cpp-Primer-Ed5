@@ -25,7 +25,7 @@
  *
  * @note
  *   The pointer must point to a valid memory address (non-null) when
- * dereferenced (*pointer). Undefined behavior will occur if `pointer` is null
+ * dereferenced (*pointer). Undefined behaviour will occur if `pointer` is null
  * or dangling.
  */
 void Dump(const int& variable_1, const int& variable_2,

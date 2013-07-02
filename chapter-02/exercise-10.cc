@@ -29,7 +29,7 @@ int main() {
    * initializer, it is not initialized by default. Its memory contains
    * indeterminate value. This is a deliberate choice in c++ to avoid
    * unnecessary overhead and allow faster code execution. Using it without
-   * initialization causes undefined behavior.
+   * initialization causes undefined behaviour.
    */
   int local_int;
 

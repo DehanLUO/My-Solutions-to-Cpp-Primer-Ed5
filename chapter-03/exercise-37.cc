@@ -21,7 +21,7 @@ int main() {
   /*
    * The loop `while(*cp)` expects a null terminator to stop
    * But `ca` lacks a '\0'
-   * It will keep reading past the array bounds (undefined behavior)
+   * It will keep reading past the array bounds (undefined behaviour)
    */
 
   // Prints each character until it finds a null terminator ('\0')

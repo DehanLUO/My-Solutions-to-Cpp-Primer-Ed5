@@ -12,7 +12,7 @@
  * - That memory might be valid or not.
  * - It might point to a deallocated object (dangling pointer).
  * - It might point to a memory region that is not owned by your program,
- *   causing undefined behavior if accessd.
+ *   causing undefined behaviour if accessd.
  * - It might point to valid memory but not to a properly constructed object.
  *
  * What you can check for nullptr with `p != nullptr`

@@ -20,7 +20,7 @@ int main() {
   /*
    * Dereference p and checks the value of variable. `variable` is an
    * uninitialized stack variable, meaning its value is indeterminate. Reading
-   * an uninitialized variable is Undefined Behavior in c++.
+   * an uninitialized variable is Undefined Behaviour in c++.
    */
   if (*p)
     ;
