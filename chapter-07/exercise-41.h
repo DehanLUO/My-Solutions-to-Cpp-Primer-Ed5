@@ -1,12 +1,17 @@
 /*
- * Exercise 7.26: Define Sales_data::avg_price as an inline function.
+ * Exercise 7.41: Rewrite your own version of the Sales_data class to use
+ * delegating constructors. Add a statement to the body of each of the
+ * constructors that prints a message whenever it is executed. Write
+ * declarations to construct a Sales_data object in every way possible. Study
+ * the output until you are certain you understand the order of execution among
+ * delegating constructors.
  */
 
-#ifndef CHAPTER_07_EXERCISE_26_H_
-#define CHAPTER_07_EXERCISE_26_H_
+#ifndef CHAPTER_07_EXERCISE_41_H_
+#define CHAPTER_07_EXERCISE_41_H_
 
 #include <cstdint>   // uint16_t
-#include <iostream>  // std::istream, std::ostream, std::cin
+#include <iostream>  // std::istream, std::ostream, std::cin, std::cout
 #include <string>    // std::string
 
 class Sales_data {
@@ -25,7 +30,7 @@ class Sales_data {
   /**
    * @brief Default constructor
    */
-  Sales_data() : Sales_data("", 0, 0.F) {};
+  Sales_data() : Sales_data("", 0, 0.F) { std::cout << "Sales_data()\n"; };
 
   /**
    * @brief Constructs with ISBN only
@@ -33,7 +38,10 @@ class Sales_data {
    * @note Explicit to prevent implicit conversions
    */
   explicit Sales_data(const std::string& book_nombre)
-      : Sales_data(book_nombre, 0, 0.F) {}
+      : Sales_data(book_nombre, 0, 0.F) {
+    std::cout << "Sales_data(const std::string& book_nombre=" << book_nombre
+              << ")\n";
+  }
 
   /**
    * @brief Complete manual initialization
@@ -44,7 +52,11 @@ class Sales_data {
    */
   explicit Sales_data(const std::string& book_nombre, uint16_t units_sold,
                       float revenue)
-      : book_nombre(book_nombre), units_sold(units_sold), revenue(revenue) {}
+      : book_nombre(book_nombre), units_sold(units_sold), revenue(revenue) {
+    std::cout << "Sales_data(const std::string& book_nombre=" << book_nombre
+              << ", uint16_t units_sold=" << units_sold
+              << ", revenue=" << revenue << ")\n";
+  }
 
   /**
    * @brief Copy constructor
@@ -161,4 +173,8 @@ inline std::ostream& print(std::ostream& output_stream,
                        << item.avg_price();
 }
 
-#endif  // CHAPTER_07_EXERCISE_26_H_
+#endif  // CHAPTER_07_EXERCISE_41_H_
+
+/* $ g++ -o main chapter-07/exercise-41.cc && ./main
+
+ */

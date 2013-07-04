@@ -1,12 +1,14 @@
 /*
- * Exercise 7.26: Define Sales_data::avg_price as an inline function.
+ * Exercise 7.47: Explain whether the Sales_data constructor that takes a string
+ * should be explicit. What are the benefits of making the constructor explicit?
+ * What are the drawbacks?
  */
 
-#ifndef CHAPTER_07_EXERCISE_26_H_
-#define CHAPTER_07_EXERCISE_26_H_
+#ifndef CHAPTER_07_EXERCISE_47_H_
+#define CHAPTER_07_EXERCISE_47_H_
 
 #include <cstdint>   // uint16_t
-#include <iostream>  // std::istream, std::ostream, std::cin
+#include <iostream>  // std::istream, std::ostream, std::cin, std::cout
 #include <string>    // std::string
 
 class Sales_data {
@@ -25,15 +27,29 @@ class Sales_data {
   /**
    * @brief Default constructor
    */
-  Sales_data() : Sales_data("", 0, 0.F) {};
+  Sales_data() : Sales_data("", 0, 0.F) { std::cout << "Sales_data()\n"; };
 
   /**
    * @brief Constructs with ISBN only
    * @param book_nombre International Standard Book Number
    * @note Explicit to prevent implicit conversions
+   *
+   * Benefits of explicit:
+   * 1. Prevents implicit conversions from std::string to Sales_data
+   *   - Avoids accidental conversions like:
+   *     Sales_data item = "978-1234567890"; // Error with explicit
+   *   - Requires explicit construction:
+   *     Sales_data item("978-1234567890"); // Clear intent
+   * Without explicit, these problematic conversions become legal:
+   * - Sales_data = "text" (const char* → string → Sales_data)
+   * - Function(Sales_data) can be called with string argument
+   * - May lead to unexpected temporary object creation
    */
   explicit Sales_data(const std::string& book_nombre)
-      : Sales_data(book_nombre, 0, 0.F) {}
+      : Sales_data(book_nombre, 0, 0.F) {
+    std::cout << "Sales_data(const std::string& book_nombre=" << book_nombre
+              << ")\n";
+  }
 
   /**
    * @brief Complete manual initialization
@@ -44,7 +60,11 @@ class Sales_data {
    */
   explicit Sales_data(const std::string& book_nombre, uint16_t units_sold,
                       float revenue)
-      : book_nombre(book_nombre), units_sold(units_sold), revenue(revenue) {}
+      : book_nombre(book_nombre), units_sold(units_sold), revenue(revenue) {
+    std::cout << "Sales_data(const std::string& book_nombre=" << book_nombre
+              << ", uint16_t units_sold=" << units_sold
+              << ", revenue=" << revenue << ")\n";
+  }
 
   /**
    * @brief Copy constructor
@@ -161,4 +181,4 @@ inline std::ostream& print(std::ostream& output_stream,
                        << item.avg_price();
 }
 
-#endif  // CHAPTER_07_EXERCISE_26_H_
+#endif  // CHAPTER_07_EXERCISE_47_H_
