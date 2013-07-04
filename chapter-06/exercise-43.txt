@@ -1,0 +1,48 @@
+/*
+ * Exercise 6.43: Which one of the following declarations and definitions would
+ * you put in a header? In a source file? Explain why.
+ *     (a) inline bool eq(const BigInt&, const BigInt&) {...}
+ *     (b) void putValues(int *arr, int size);
+ */
+
+/*
+ * Key principles for header/source file organization:
+ * 1. Header files should contain:
+ *    - Non-defining declarations (for external linkage)
+ *    - Inline function definitions
+ *    - Templates
+ * 2. Source files should contain:
+ *    - Non-inline function definitions
+ *    - Implementation details
+ */
+
+// Case (a) - Inline function definition
+/*
+ * Should be placed in header because:
+ * 1. inline functions must be defined in every translation unit that uses
+ * them
+ * 2. The definition must be visible at the call site
+ * 3. Prevents multiple definition errors
+ *
+ * Example header content:
+ * inline bool Eq(const BigInt& lhs, const BigInt& rhs) {
+ *   // comparison implementation
+ * }
+ */
+
+// Case (b) - Non-inline function declaration
+/*
+ * Organization:
+ * 1. Declaration (prototype) in header:
+ *    void PutValues(int *arr, int size);
+ *
+ * 2. Definition in source file:
+ *    void PutValues(int *arr, int size) {
+ *      // implementation
+ *    }
+ *
+ * Rationale:
+ * 1. Declaration needs to be visible to callers
+ * 2. Definition should exist in only one translation unit
+ * 3. Follows One Definition Rule (ODR)
+ */

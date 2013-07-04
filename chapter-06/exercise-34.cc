@@ -30,11 +30,11 @@ int factorial(int val) {
  * @return int Factorial of val
  * @throws std::invalid_argument for negative inputs
  */
-int FactorialCorrect(int val) {
+int Factorial(int val) {
   if (val < 0)
     throw std::invalid_argument("Factorial of negative numbers is undefined");
   if (val > 1)  // Proper stopping condition
-    return FactorialCorrect(val - 1) * val;
+    return Factorial(val - 1) * val;
   return 1;  // Base case: 0! = 1 and 1! = 1
 }
 
@@ -52,9 +52,9 @@ int main() {
   // std::cout << "Original (-1): " << factorial(-1) << '\n';  // Crash!
 
   // Testing corrected version
-  std::cout << "Corrected (5): " << FactorialCorrect(5) << '\n';  // 120
+  std::cout << "Corrected (5): " << Factorial(5) << '\n';  // 120
   try {
-    std::cout << "Corrected (-1): " << FactorialCorrect(-1) << '\n';
+    std::cout << "Corrected (-1): " << Factorial(-1) << '\n';
   } catch (const std::exception& e) {
     std::cout << "Error: " << e.what() << '\n';  // Proper error handling
   }
