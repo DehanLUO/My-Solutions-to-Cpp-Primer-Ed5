@@ -1,0 +1,38 @@
+/*
+ * Exercise 7.34: What would happen if we put the typedef of pos in the Screen
+ * class on page 285 as the last line in the class?
+ *     // note: This code is for illustration purposes ony and reflects bad
+ *     // practice. It is generally a bad idea to use the same name for a
+ *     // parameter and a member
+ *     int height; // defines a name subsequently used inside Screen
+ *     class Screen {
+ *     public:
+ *       typedef std::string::size_type pos;
+ *       void dummy_fcn(pos height) {
+ *         cursor = width * height; // which height? the parameter
+ *       }
+ *     private:
+ *       pos cursor = 0;
+ *       pos height = 0, width = 0;
+ *     };
+ */
+
+/*
+ * // All uses of 'pos' before its declaration would fail
+ * // The compiler doesn't know what 'pos' refers to
+ * class BadScreen {
+ *  public:
+ *   // Member declarations using pos BEFORE its definition
+ *   void dummy_fcn(pos height) {  // Error: pos not yet declared
+ *     cursor = width * height;
+ *   }
+ *
+ *  private:
+ *   pos cursor = 0;  // Error: pos not yet declared
+ *   pos height = 0;  // Error: pos not yet declared
+ *   pos width = 0;   // Error: pos not yet declared
+ *
+ *   // Type alias comes too late
+ *   typedef std::string::size_type pos;
+ * }
+ */
