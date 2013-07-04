@@ -1,0 +1,13 @@
+/*
+ * Exercise 7.28: What would happen in the previous exercise if the return type
+ * of move, set, and display was Screen rather than Screen&?
+ */
+
+/*
+ * If Move(), Set(), and Display() returned Screen instead of Screen&:
+ *
+ * Behaviour changes:
+ * - Each call would create a TEMPORARY COPY of the Screen object
+ * - Modifications would apply to the copy, not the original object
+ * - Method chaining would operate on successive temporary objects
+ */
