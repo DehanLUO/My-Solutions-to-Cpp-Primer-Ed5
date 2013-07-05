@@ -33,8 +33,8 @@ class StreamStateGuard {
 /**
  * @brief Processes input stream until EOF with type-safe extraction
  * @tparam T Type to extract from stream
- * @param is Input stream to process
- * @param os Output stream for results
+ * @param istream Input stream to process
+ * @param ostream Output stream for results
  * @return Reference to the restored input stream
  *
  * Features:
