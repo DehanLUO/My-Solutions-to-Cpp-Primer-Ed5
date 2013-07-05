@@ -1,0 +1,28 @@
+// Exercise 8.3: What causes the following while to terminate?
+//     while (cin >> i) /* ... */
+
+/**
+ * @brief Termination conditions for `while (std::cin >> i)`
+ *
+ * _LIBCPP_HIDE_FROM_ABI explicit operator bool() const { return !fail(); }
+ * The loop terminates when the stream's operator bool() returns false,
+ *
+ * inline _LIBCPP_HIDE_FROM_ABI bool ios_base::fail() const { return (__rdstate_ & (failbit | badbit)) != 0; }
+ * which occurs when `fail()` returns true. The `fail()` state is determined by:
+ *
+ * 1. **Input Failure (failbit)**
+ *    - Type mismatch (e.g., entering 'a' when expecting int)
+ *    - Numerical overflow/underflow
+ *    - Expected delimiter not found
+ *
+ * 2. **Stream Corruption (badbit)**
+ *    - Hardware failures (disk errors)
+ *    - Memory allocation failures
+ *    - Invalid stream positioning
+ *
+ * 3. **End-of-File (eofbit)** ?
+ *    When a read operation successfully reaches the end of input, it may set
+ *    `eofbit`, but `failbit` is still not set, so `stream` is still considered
+ *    good. The next read operation, beyond the end, fails, setting `failbit`.
+ *    At this point, `fail()` return true.
+ */
