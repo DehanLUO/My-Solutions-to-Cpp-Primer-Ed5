@@ -1,0 +1,50 @@
+/*
+ * Exercise 9.1: Which is the most appropriate—a vector, a deque, or a list—for
+ * the following program tasks? Explain the rationale for your choice. If there
+ * is no reason to prefer one or another container, explain why not.
+ *     (a) Read a fixed number of words, inserting them in the container
+ *         alphabetically as they are entered. We’ll see in the next chapter
+ *         that associative containers are better suited to this problem.
+ *     (b) Read an unknown number of words. Always insert new words at the back.
+ *         Remove the next value from the front.
+ *     (c) Read an unknown number of integers from a file. Sort the numbers and
+ *         then print them to standard output.
+ */
+
+/*
+ * | Operation       | vector | deque  | list  |
+ * |----------------|--------|--------|-------|
+ * | Front removal  | O(n)   | O(1)   | O(1)  |
+ * | Back insertion | O(1)   | O(1)   | O(1)  |
+ * | Middle insert  | O(n)   | O(n)   | O(1)  |
+ * | Sorting        | Fast   | Medium | Slow  |
+ */
+
+/*
+ * Task (a): Fixed number of words, alphabetical insertion
+ * Recommended container: std::list
+ * Rationale:
+ * 1. Frequent insertions at arbitrary positions
+ * 2. No random access needed
+ * 3. No pre-allocation benefit
+ */
+
+/*
+ * Task (b): Unknown words, back insert/front remove
+ * Recommended container: std::deque
+ * Rationale:
+ * 1. Efficient insertion at back (O(1))
+ * 2. Efficient removal from front (O(1))
+ * 3. No need for contiguous storage
+ * Alternative: std::list (slightly worse locality)
+ */
+
+/*
+ * Task (c): Unknown integers, sort and print
+ * Recommended container: std::vector
+ * Rationale:
+ * 1. Optimal for sorting (contiguous memory)
+ * 2. Efficient reading sequence (cache-friendly)
+ * 3. Simple to sort with std::sort
+ * Alternative: std::deque (acceptable but slower sort)
+ */
