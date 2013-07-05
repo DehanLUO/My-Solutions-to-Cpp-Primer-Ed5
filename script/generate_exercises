@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# =============================================================================
+# File: generate_exercises
+# Author: Dehan Luo
+# Description: 
+#   This script generates C++ exercise template files for a specified chapter.
+#   Each file is named and structured according to a fixed format.
+#
+#   Usage:
+#     ./generate_exercises.sh <chapter_index> <exercise_count>
+#     - chapter_index: Integer chapter number (e.g., 3 for Chapter 03)
+#     - exercise_count: Number of exercises to generate in that chapter
+#
+# Requirements:
+#   - Bash
+#   - Write permission in current directory
+# =============================================================================
+
+set -euo pipefail
+IFS=$'\n\t'
+
+# -----------------------------------------------------------------------------
+# Prints usage instructions to stderr.
+# -----------------------------------------------------------------------------
+print_usage() {
+  echo "Usage: $0 <chapter_index> <exercise_count>" >&2
+  echo "  chapter_index: Integer (e.g., 3)" >&2
+  echo "  exercise_count: Positive integer (e.g., 10)" >&2
+}
+
+# -----------------------------------------------------------------------------
+# Generates a single exercise template file.
+# Globals:
+#   chapter_folder_name
+# Arguments:
+#   $1 - Exercise index (1-based integer)
+# Outputs:
+#   Writes a new .cc file into the chapter folder
+# -----------------------------------------------------------------------------
+generate_exercise_template() {
+  local exercise_index
+  local exercise_name
+  local output_path
+
+  exercise_index=$(printf "%02d" "$1")
+  exercise_name="exercise-${exercise_index}.cc"
+  output_path="${chapter_folder_name}/${exercise_name}"
+
+  cat > "${output_path}" << EOF
+/*
+ * Exercise
+ */
+
+int main() { return 0; }
+
+/*
+ * \$ g++ -o main ${output_path} && ./main
+
+ */
+EOF
+}
+
+# -----------------------------------------------------------------------------
+# Entry point of the script
+# -----------------------------------------------------------------------------
+main() {
+  if [[ $# -ne 2 ]]; then
+    print_usage
+    exit 1
+  fi
+
+  local chapter_index chapter_folder_name exercise_count
+
+  chapter_index=$(printf "%02d" "$1")
+  chapter_folder_name="chapter-${chapter_index}"
+  exercise_count="$2"
+
+  # Ensure folder exists
+  if [[ ! -d "${chapter_folder_name}" ]]; then
+    mkdir -v "${chapter_folder_name}"
+  fi
+
+  # Generate exercise files
+  for (( index=1; index<=exercise_count; index++ )); do
+    generate_exercise_template "${index}"
+  done
+}
+
+# Invoke main
+main "$@"
