@@ -1,0 +1,12 @@
+/*
+ * Exercise 9.32: In the program onpage 354 would it be legal to write the call
+ * to insert as follows? If not, why not?
+ *     iter = vi.insert(iter, *iter++);
+ */
+
+/*
+ * The proposed change is not legal and would result in undefined behaviour.
+ * The compiler could:
+ * - Evaluate *it++ fisrt (incrementing iter before insert)
+ * - Or evaluate iter first for the insert position
+ */
