@@ -1,0 +1,23 @@
+/*
+ * Exercise 10.40: What kinds of iterators do you think copy requires? What
+ * about reverse or unique?
+ */
+
+/*
+ * 1. std::copy(first, last, d_first):
+ *    - Input requirements:
+ *      * first, last: InputIterator (at minimum)
+ *    - Output requirements:
+ *      * d_first: OutputIterator (at minimum)
+ *    - Typical usage: Works with all iterator categories
+ *
+ * 2. std::reverse(first, last):
+ *    - Requirements: BidirectionalIterator
+ *    - Must support -- operation
+ *    - Won't work with forward_list (only forward iterators)
+ *
+ * 3. std::unique(first, last):
+ *    - Requirements: ForwardIterator
+ *    - Must support multi-pass and read/write
+ *    - Works with vector, deque, list, but not input streams
+ */

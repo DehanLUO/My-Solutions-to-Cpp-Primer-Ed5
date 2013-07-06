@@ -1,0 +1,33 @@
+/*
+ * Exercise 10.38: List the five iterator categories and the operations that
+ * each supports.
+ */
+
+/*
+ * C++ Iterator Categories:
+ * 1. Input Iterators:
+ *    - Read-only access (single pass)
+ *    - Operations: ==, !=, ++, *, ->
+ *    - Example: istream_iterator
+ *
+ * 2. Output Iterators
+ *    - Write-only access (single pass)
+ *    - Operations: ++, * (dereference for output)
+ *    - Example: ostream_iterator
+ *
+ * 3. Forward Iterators:
+ *    - Read/write access (multi-pass)
+ *    - Operations: All input iterator ops + default construction
+ *    - Example: forward_list iterators
+ *
+ * 4. Bidirectional Iterators:
+ *    - Forward iterator capabilities + --
+ *    - Operations: All forward ops + -- (decrement)
+ *    - Example: list iterators
+ *
+ * 5. Random Access Iterators:
+ *    - Bidirectional capabilities + random access
+ *    - Operations: All bidirectional ops +:
+ *      +, +=, -, -=, <, >, <=, >=, []
+ *    - Example: vector, deque iterators
+ */
