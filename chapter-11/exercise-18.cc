@@ -3,9 +3,25 @@
  * using auto or decltype.
  */
 
-int main() { return 0; }
+#include <cstddef>   // size_t
+#include <iostream>  // std::cout
+#include <map>       // std::map
+#include <string>    // std::string
 
-/*
- * $ g++ -o main chapter-11/exercise-18.cc && ./main
+int main() {
+  std::map<std::string, size_t> word_count;
 
- */
+  // get an iterator positioned on the first element
+  // The explicit type of map_it is:
+  std::map<std::string, size_t>::const_iterator map_it = word_count.cbegin();
+
+  // compute the current iterator to the off-the-end iterator
+  while (map_it != word_count.cend()) {
+    // dereference the iterator to print the element by key-value pairs
+    std::cout << map_it->first << " occurs " << map_it->second << " times "
+              << '\n';
+    ++map_it;  // increment the iterator to denote the next element
+  }
+
+  return 0;
+}

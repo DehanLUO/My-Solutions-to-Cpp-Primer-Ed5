@@ -3,9 +3,20 @@
  * from int to vector<int>?
  */
 
-int main() { return 0; }
+#include <cassert>  // static_assert
+#include <map>      // std::map
+#include <vector>   // std::vector
 
-/*
- * $ g++ -o main chapter-11/exercise-15.cc && ./main
+int main() {
+  using MapType = std::map<int, std::vector<int>>;
 
- */
+  static_assert(std::is_same<MapType::key_type, int>::value,
+                "key_type should be int");
+  static_assert(std::is_same<MapType::mapped_type, std::vector<int>>::value,
+                "mapped_type should be vector<int>");
+  static_assert(std::is_same<MapType::value_type,
+                             std::pair<const int, std::vector<int>>>::value,
+                "value_type should be pair<const int, vector<int>>");
+
+  return 0;
+}
