@@ -1,0 +1,16 @@
+/*
+ * Exercise 10.23: How many arguments does bind take?
+ */
+
+/*
+ * std::bind argument structure:
+ * 1. First argument: Callable (function/lambda/functor)
+ * 2. Subsequent args: Parameters to bind
+ *    - Can be values (bound directly)
+ *    - Or placeholders (_1, _2,...) for deferred arguments
+ *
+ * Example:
+ * auto b1 = bind(func, 10);          // 1 callable + 1 arg
+ * auto b2 = bind(func, _1, 20);      // 1 callable + 2 args
+ * auto b3 = bind(func, _1, _2, 30);  // 1 callable + 3 args
+ */
