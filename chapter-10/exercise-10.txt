@@ -1,0 +1,60 @@
+/*
+ * Exercise 10.10: Why do you think the algorithms don’t change the size of
+ * containers?
+ */
+
+/*
+ * Core Design Principle:
+ * The STL maintains strict separation between:
+ * 1. Algorithms (operations on elements)
+ * 2. Containers (storage management)
+ * 3. Iterators (access mediation)
+ *
+ * This architecture enables genericity while preserving efficiency.
+ */
+
+/*
+ * Primary Reasons for Size Immutability:
+ *
+ * 1. Interface Consistency:
+ *    - Algorithms work with iterators, not containers
+ *    - Iterators don't expose container modification methods
+ *    - This allows algorithms to work with ranges from any source
+ *
+ * 2. Performance Guarantees:
+ *    - Fixed size allows better complexity calculations
+ *    - Prevents unexpected reallocations during processing
+ *    - Enables optimizations like pointer arithmetic for random access
+ *
+ * 3. Safety Considerations:
+ *    - Prevents iterator invalidation during algorithm execution
+ *    - Eliminates reallocation surprises for sorted/partitioned ranges
+ *    - Maintains exception safety guarantees
+ *
+ * 4. Design Philosophy:
+ *    - Single Responsibility Principle
+ *    - Algorithms transform elements, containers manage storage
+ *    - Clean separation of concerns
+ */
+
+/*
+ * Hypothetical Bad Design (if algorithms modified containers):
+ *
+ * template<typename Container>
+ * void bad_algorithm(Container& c) {
+ *   // Would need to know container type
+ *   if (needs_more_space) {
+ *     if (vector_like) c.resize(new_size);
+ *     else if (list_like) c.insert(...);
+ *   }
+ *   // Breaks generic programming
+ * }
+ *
+ * Current Good Design:
+ *
+ * template<typename Iterator>
+ * void good_algorithm(Iterator first, Iterator last) {
+ *   // Only needs iterator capabilities
+ *   // Never concerns itself with storage
+ * }
+ */
