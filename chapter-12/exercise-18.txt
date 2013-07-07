@@ -1,0 +1,20 @@
+/*
+ * Exercise 12.18: Why doesn’t shared_ptr have a release member?
+ */
+
+/*
+ * unique_ptr::release() releases ownership of the managed object and returns
+ * the raw pointer without deleting it.
+ *
+ * Fundamental Design Difference:
+ * - unique_ptr: Exclusive ownership (one owner)
+ * - shared_ptr: Shared ownership (multiple owners)
+ *
+ * Why no release():
+ * - Ownership Complexity: With multiple shared owners, releasing to a raw
+ *   pointer would violate RAII priciples.
+ * - Reference Counting: The shared control block makes ownership transfer
+ *   ambiguous.
+ * - Safety Guarantees: Would break automatic deletion when last shared_ptr
+ *   expires.
+ */

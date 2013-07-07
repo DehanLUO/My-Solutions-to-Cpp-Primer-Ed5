@@ -1,0 +1,31 @@
+/*
+ * Exercise 12.21: We could have written StrBlobPtr’s deref member as follows:
+ *     std::string& deref() const {
+ *       return (*check(curr, "dereference past end"))[curr];
+ *     }
+ * Which version do you think is better and why?
+ */
+
+/*
+ * Prefer the original version for:
+ *
+ * Readability:
+ * - Original: Clear separation of concerns
+ * - Alternative: More compact but potentially harder to debug
+ *
+ * Debugging:
+ * - Original: Easier to inspect intermediate p value
+ * - Alternative: Harder to set breakpoints on the access operation
+ *
+ * Performance:
+ * Both version generate identical optimized code. No meaningful difference in
+ * runtime.
+ *
+ * Maintainability:
+ * - Original: More self-documenting
+ * - Alternative: More concise but less explicit
+ *
+ * Exception Safety:
+ * Both versions provide identical guarantees. Check() throws before any access
+ * occurs.
+ */
