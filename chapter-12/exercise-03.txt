@@ -1,0 +1,10 @@
+/*
+ * Exercise 12.3: Does this class need const versions of push_back and pop_back?
+ * If so, add them. If not, why aren’t they needed?
+ */
+
+/*
+ * push_back and pop_back are modifying operations
+ * Const member functions should not modify object state
+ * Providing const versions would violate const-correctness
+ */
