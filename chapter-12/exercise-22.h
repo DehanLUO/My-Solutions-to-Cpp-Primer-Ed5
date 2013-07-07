@@ -81,7 +81,7 @@ class StrBlob {
    * @return Const reference to the first element
    * @throws std::out_of_range if the StrBlob is empty
    */
-  std::string& Front() const;
+  const std::string& Front() const;
 
   /**
    * @brief Accesses the last element (non-const version)
@@ -95,7 +95,7 @@ class StrBlob {
    * @return Const reference to the last element
    * @throws std::out_of_range if the StrBlob is empty
    */
-  std::string& Back() const;
+  const std::string& Back() const;
 
   /**
    * @brief Accesses the element at specified index (non-const version)
@@ -111,7 +111,7 @@ class StrBlob {
    * @return Const reference to the requested element
    * @throws std::out_of_range if idx is out of range
    */
-  std::string& At(SizeType idx) const;
+  const std::string& At(SizeType idx) const;
 
   /**
    * @brief Returns a StrBlobPtr pointing to the first element in the StrBlob
@@ -152,8 +152,9 @@ class StrBlob {
   ConstStrBlobPtr Cend() const;  // For exercise-22
 
  protected:
-  /*
-   * @brief Checks if the StrBlob is empty and throws if it is
+  /**
+   * @brief Checks if the underlying vector is empty and throws an exception if
+   * so
    * @param msg The error message to include in the exception
    * @throws std::out_of_range if the StrBlob is empty
    */
@@ -255,7 +256,7 @@ class StrBlobPtr {
  private:
   // store a weak_ptr, which means the underlying vector might be destroyed
   std::weak_ptr<std::vector<std::string>> wptr_;
-  std::size_t curr_;  // current position within tha array
+  std::size_t curr_;  // current index in vector
 };
 
 /**
@@ -335,15 +336,15 @@ inline void StrBlob::PopBack() {
 
 inline std::string& StrBlob::Front() { return AccessFront(*data_); }
 
-inline std::string& StrBlob::Front() const { return AccessFront(*data_); }
+inline const std::string& StrBlob::Front() const { return AccessFront(*data_); }
 
 inline std::string& StrBlob::Back() { return AccessBack(*data_); }
 
-inline std::string& StrBlob::Back() const { return AccessBack(*data_); }
+inline const std::string& StrBlob::Back() const { return AccessBack(*data_); }
 
 inline std::string& StrBlob::At(SizeType idx) { return AccessAt(*data_, idx); }
 
-inline std::string& StrBlob::At(SizeType idx) const {
+inline const std::string& StrBlob::At(SizeType idx) const {
   return AccessAt(*data_, idx);
 }
 
@@ -377,7 +378,8 @@ auto StrBlob::AccessBack(VecType& vec) -> decltype((vec.back())) {
 
 template <typename VecType>
 auto StrBlob::AccessAt(VecType& vec, SizeType idx) -> decltype((vec.at(idx))) {
-  if (idx >= vec.size()) throw std::out_of_range("at on empty StrBlob");
+  if (idx >= vec.size())
+    throw std::out_of_range("index out of range in StrBlob");
   return vec.at(idx);
 }
 
