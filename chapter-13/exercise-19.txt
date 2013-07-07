@@ -1,0 +1,24 @@
+/*
+ * Exercise 13.19: Does your Employee class need to define its own versions of
+ * the copy-control members? If so, why? If not, why not? Implement whatever
+ * copy-control members you think Employee needs.
+ */
+
+/*
+ * The Employee class should not define its own copy-control members (copy
+ * constructor, copy assignment operator, or destructor) because:
+ * 1. Current Implementataion Analysis:
+ *    - The class contains:
+ *      - A unit16_t id_ (primitive type - safe to copy)
+ *      - A std::string name_ (manages its own resources)
+ *      - A static next_id_ counter (shared across instances)
+ *    - No manual resource management is needed
+ * 2. Why No Custom Copy-Control Needed:
+ *    - THe synthesized copy operations work correctly:
+ *      - Copy constructor: Copies both id_ and name_
+ *      - Copy assignment: Copies both members
+ *      - Destructor: Properly destroys std::string
+ *    - Unique ID semantics are maintained:
+ *      - IDs are only generated in constructors
+ *      - Copies keep their original IDs (desired behaviour)
+ */

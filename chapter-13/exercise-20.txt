@@ -1,0 +1,43 @@
+/*
+ * Exercise 13.20: Explain what happens when we copy, assign, or destroy objects
+ * of our TextQuery and QueryResult classes from § 12.3 (p. 484).
+ */
+
+/*
+ * TextQuery Behaviour
+ *
+ * Copy Construction:
+ * 1. The shared_ptr to the underlying vector is copied
+ * 2. Reference count for the vector increases
+ * 3. Both objects now share the same data
+ *
+ * Copy Assignment:
+ * 1. The existing shared_ptr is decremented (may delete old data if last)
+ * 2. New shared_ptr is assigned (reference count increases)
+ * 3. Both objects share the new data
+ *
+ * Destruction:
+ * 1. shared_ptr destructor runs
+ * 2. Reference count decremented
+ * 3. If count reaches 0:
+ *    - Underlying vector is destroyed
+ *    - All strings in vector are destroyed
+ *    - map of word indices is destroyed
+ */
+
+/*
+ * QueryResult Behaviour
+ *
+ * Copy Construction:
+ * 1. The weak_ptr is copied (no effect on reference count)
+ * 2. Current index is copied
+ * 3. Both pointers track the same data independently
+ *
+ * Copy Assignment:
+ * 1. The weak_ptr is assigned (no effect on reference count)
+ * 2. Current index is copiednow track the same position
+ *
+ * Destruction:
+ * 1. weak_ptr is destroyed (no effect on reference count)
+ * 2. No impact on the underlying data
+ */
