@@ -1,0 +1,11 @@
+/*
+ * Exercise 13.17: Write versions of numbered and f corresponding to the
+ * previous three exercises and check whether you correctly predicted the
+ * output.
+ */
+
+/*
+ * The implementations of numbered and f corresponding to Exercises 13.14
+ * through 13.16 have already been completed in the source file
+ * exercise-14.cc, exercise-15.cc, and exercise-16.cc.
+ */
