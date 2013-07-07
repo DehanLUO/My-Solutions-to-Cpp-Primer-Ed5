@@ -195,7 +195,7 @@ int main() {
 }
 
 /*
- * g++ -std=c++11 -O0 -fno-elide-constructors -o main main.cc && ./main
+ * g++ -std=c++11 -O0 -fno-elide-constructors -o main chapter-12/exercise-10-details.cc && ./main
  * === BEGIN ANALYSIS ===
  *   CONSTRUCT Tracked @0x7ff7bcd73c2b
  * Creating shared_ptr<Tracked>(copy from origin)

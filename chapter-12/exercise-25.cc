@@ -3,9 +3,17 @@
  *     int *pa = new int[10];
  */
 
-int main() { return 0; }
+int main() {
+  int* pa = new int[10];  // Array allocation
 
-/*
- * $ g++ -o main chapter-12/exercise-25.cc && ./main
+  /*
+   * Defensive programming practices:
+   * 1. Immediately assign nullptr after deletion
+   * 2. Verify allocation success in production code
+   * 3. Consider using smart pointers in modern C++
+   */
+  delete[] pa;
+  pa = nullptr;  // Prevent dangling pointer
 
- */
+  return 0;
+}
