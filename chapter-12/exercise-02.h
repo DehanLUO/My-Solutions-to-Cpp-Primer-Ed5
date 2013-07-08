@@ -154,7 +154,8 @@ class StrBlob {
    */
   template <typename VecType>
   static auto AccessAt(VecType& vec, SizeType idx) -> decltype((vec.at(idx))) {
-    if (idx >= vec.size()) throw std::out_of_range("at on empty StrBlob");
+    if (idx >= vec.size())
+      throw std::out_of_range("index out of range in StrBlob");
     return vec.at(idx);
   }
 
