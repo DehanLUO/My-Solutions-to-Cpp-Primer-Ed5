@@ -1,0 +1,67 @@
+/*
+ * Exercise 13.38: We did not use copy and swap to define the Message assignment
+ * operator. Why do you suppose this is so?
+ */
+
+/*
+ * If the copy-and-swap idiom were employed for the Message assignment operator,
+ * the execution sequence would entail the following steps:
+ *
+ * 1. Parameter Initialization:
+ *    - The assignment operator’s parameter (rhs) is of type Message (not a
+ *      reference), triggering a copy construction.
+ *    - The copy constructor duplicates rhs.contents and rhs.folders, then
+ *      invokes add_to_Folders() to register the new Message object with all
+ *      Folders in rhs.folders.
+ * 2. Swap Operation:
+ *    - swap(*this, rhs) executes:
+ *      - Removal Phase: Iterates over both objects’ folders, invoking remMsg()
+ *        to sever bidirectional links.
+ *      - Member Swap: Efficiently swaps contents (via std::string::swap) and
+ *        folders (via std::set::swap).
+ *      - Reinsertion Phase: Re-establishes links by calling addMsg() for each
+ *        Folder in the updated folders sets.
+ *    - Destruction of Temporary:
+ *      - Upon scope exit, rhs (now holding the original *this data) is
+ *        destroyed, invoking ~Message().
+ *      - The destructor calls remove_from_Folders(), redundantly removing the
+ *        original data from all Folders.
+ *
+ * Performance Deficiencies
+ * While semantically correct, this approach introduces significant
+ * inefficiencies:
+ * - Redundant Copies: The pass-by-value parameter necessitates a full copy of
+ *   rhs, including duplicate string allocation and set construction.
+ * - Double Updates: Each Folder in rhs.folders is updated twice (during copy
+ *   construction and swap), followed by a third update during destruction.
+ * - Unnecessary Self-Assignment Overhead: Even self-assignment (m1 = m1) incurs
+ *   costly temporary creation and destruction.
+ *
+ * Advantages of the Standard Implementation
+ *
+ * The current implementation (using a const Message& parameter) optimizes
+ * performance by:
+ * 1. Direct Modification:
+ *    - Explicitly removes *this from its current Folders once via
+ *      remove_from_Folders().
+ *    - Copies rhs.contents and rhs.folders in place.
+ *    - Adds *this to new Folders once via add_to_Folders().
+ * 2. Avoided Overhead:
+ *    - No temporary object creation or destruction.
+ *    - Minimal Folder updates (one removal + one insertion pass).
+ * 3. Exception Safety:
+ *    - Strong guarantee is maintained: if copying fails, *this emains detached
+ *      from all Folders (a valid state).
+ *
+ * Conclusion
+ *
+ * The copy-and-swap idiom, though elegant for resource-managing types like
+ * std::vector, is suboptimal for Message due to its bidirectional Folder
+ * relationships. The standard implementation prioritizes efficiency by:
+ * - Eliminating redundant copies.
+ * - Minimizing Folder update operations.
+ * - Retaining clarity and exception safety.
+ * This design aligns with C++ best practices for types with complex invariants,
+ * where explicit control over resource management outweighs the syntactic
+ * brevity of copy-and-swap.
+ */

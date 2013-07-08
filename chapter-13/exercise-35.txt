@@ -1,0 +1,35 @@
+/*
+ * Exercise 13.35: What would happen if Message used the synthesized versions of
+ * the copy-control members?
+ */
+
+#include "exercise-34.h"  // Message
+
+/*
+ * If Message used the synthesized versions of copy-control members:
+ *
+ * 1. Copy Constructor:
+ *    - Would perform memberwise copy of contents and folders
+ *    - BUT would fail to update the Folder objects to point to the new copy
+ *    - Result: Folders would still point to the original Message
+ *    - Violates the invariant that Folder's messages == Message's folders
+ *
+ * 2. Copy Assignment:
+ *    - Would perform memberwise assignment of contents and folders
+ *    - BUT would:
+ *      a) Not remove this Message from its current Folders
+ *      b) Not add this Message to the new Folders
+ *    - Result: Both original and new Folders would point to the Message
+ *    - Could lead to dangling pointers when either Folder is destroyed
+ *
+ * 3. Destructor:
+ *    - Would destroy the contents and folders members
+ *    - BUT would fail to remove this Message from its Folders
+ *    - Result: Folders would contain dangling pointers to destroyed Message
+ *
+ * 4. Specific Problems:
+ *    - Memory leaks (not removing Message from Folders)
+ *    - Dangling pointers (Folders pointing to deleted Messages)
+ *    - Inconsistent state between Messages and Folders
+ *    - Undefined behavior when accessing invalid pointers
+ */

@@ -1,0 +1,26 @@
+/*
+ * Exercise 13.33: Why is the parameter to the save and remove members of
+ * Message a Folder&? Why didn’t we define that parameter as Folder? Or const
+ * Folder&?
+ */
+
+/*
+ * The parameters of the save and remove member functions are defined as
+ * non-const lvalue reference (Folder&) because these functions are intended to
+ * modify the state of the Folder object passed to them.
+ *
+ * Why not pass by value (Folder)?
+ *     void save(Folder f) {  // Bad - makes copy
+ *         folders.insert(&f);  // Stores pointer to local copy!
+ *         f.addMsg(this);     // Modifies copy, not original
+ *     }  // Copy destroyed, pointer now dangling
+ * Passing a Folder by value would:
+ * - Invoke the copy constructor of Folder.
+ * - Create a temporary copy of the folder object
+ * - Modify the copy, not the original.
+ *
+ * Why not const Folder&?
+ * - Would prevent calling addMsg()/remMsg()
+ * - These methods are non-const as they modify the Folder
+ * - Compiler would reject attempts to modify const Folder
+ */
