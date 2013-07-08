@@ -1,0 +1,45 @@
+/*
+ * Exercise 13.32: Would the pointerlike version of HasPtr benefit from defining
+ * a swap function? If so, what is the benefit? If not, why not?
+ */
+
+#include "exercise-27.h"  // Original Point-like HasPtr
+
+/**
+ * @brief Analysis of swap benefits for pointerlike HasPtr
+ *
+ * For the pointerlike version of HasPtr (with reference counting),
+ * defining a custom swap function would provide NO significant benefit because:
+ *
+ * 1. Member Swapping Efficiency:
+ *    - The class only contains primitive types (pointers and int)
+ *    - std::swap is already optimal for these types
+ *    - No performance gain from a custom implementation
+ *
+ * 2. Reference Counting Impact:
+ *    - Swapping pointers doesn't affect reference counts
+ *    - No need for special handling of count_ during swap
+ *    - The shared ownership semantics remain unchanged
+ *
+ * 3. Exception Safety:
+ *    - std::swap for pointers/int is noexcept
+ *    - No additional exception safety needed
+ *
+ * 4. Optimization Potential:
+ *    - No expensive resources to manage beyond pointer swaps
+ *    - No deep copies or allocations involved
+ *
+ * Contrast with valuelike version where swap:
+ * 1. Avoided expensive string copies
+ * 2. Needed for copy-and-swap idiom
+ * 3. Provided observable behavior changes
+ *
+ * Implementation note:
+ * Even if implemented, the swap would be identical to std::swap:
+ *
+ * inline void swap(HasPtr& lhs, HasPtr& rhs) noexcept {
+ *     std::swap(lhs.ps_, rhs.ps_);
+ *     std::swap(lhs.i_, rhs.i_);
+ *     std::swap(lhs.use_, rhs.use_);
+ * }
+ */

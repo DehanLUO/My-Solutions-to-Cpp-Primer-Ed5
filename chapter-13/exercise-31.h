@@ -1,19 +1,18 @@
 /*
- * Exercise 13.22: Assume that we want HasPtr to behave like a value. That is,
- * each object should have its own copy of the string to which the objects
- * point. We’ll show the definitions of the copy-control members in the next
- * section. However, you already know everything you need to know to implement
- * these members. Write the HasPtr copy constructor and copy-assignment operator
- * before reading on.
+ * Exercise 13.31: Give your class a < operator and define a vector of HasPtrs.
+ * Give that vector some elements and then sort the vector. Note when swap is
+ * called.
  */
 
-#ifndef CHAPTER_13_EXERCISE_22_H_
-#define CHAPTER_13_EXERCISE_22_H_
+#ifndef CHAPTER_13_EXERCISE_31_H_
+#define CHAPTER_13_EXERCISE_31_H_
 
 #include <iostream>  // std::cout
 #include <string>    // std::string
 
 class HasPtr {
+  friend void swap(HasPtr&, HasPtr&);  // For exercise-30
+
  public:
   /**
    * @brief Constructor - allocates a new string
@@ -73,6 +72,13 @@ class HasPtr {
   }
 
   /**
+   * @brief Less-than comparison operator
+   * @param rhs Right-hand side HasPtr to compare with
+   * @return true if this string is less than rhs's string
+   */
+  bool operator<(const HasPtr& rhs) const { return *ps < *rhs.ps; }
+
+  /**
    * @brief Dereference operator
    * Provides access to the underlying std::string.
    * @return Reference to the std::string being pointed to.
@@ -84,22 +90,36 @@ class HasPtr {
    * Provides read-only access to the underlying std::string.
    * @return Const reference to the std::string being pointed to.
    */
-  const std::string& operator*() const {
-    return *ps;
+  const std::string& operator*() const { return *ps; }
 
-    /**
-     * @brief Prints object state for demonstration
-     */
-    void Print() const {
-      std::cout << "HasPtr @" << this << " {\n"
-                << "  ps @" << ps << ": " << *ps << ",\n"
-                << "  i: " << i << "\n"
-                << "}\n";
-    }
+  /**
+   * @brief Prints object state for demonstration
+   */
+  void Print() const {
+    std::cout << "HasPtr @" << this << " {\n"
+              << "  ps @" << ps << ": " << *ps << ",\n"
+              << "  i: " << i << "\n"
+              << "}\n";
+  }
 
-   private:
-    std::string* ps;
-    int i;
-  };
+ private:
+  std::string* ps;
+  int i;
+};
 
-#endif  // CHAPTER_13_EXERCISE_22_H_
+/**
+ * @brief Swaps two HasPtr objects and prints execution message
+ * @param lhs First HasPtr to swap
+ * @param rhs Second HasPtr to swap
+ * @Time Complexity O(1)
+ * @Space Complexity O(1)
+ */
+inline void swap(HasPtr& lhs, HasPtr& rhs) {
+  std::cout << "==> Executing swap between \"" << *lhs << "\" and \"" << *rhs
+            << "\"\n";
+
+  std::swap(lhs.ps, rhs.ps);  // Swap string pointers
+  std::swap(lhs.i, rhs.i);    // Swap integer members
+}
+
+#endif  // CHAPTER_13_EXERCISE_31_H_
