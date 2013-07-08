@@ -1,0 +1,34 @@
+/*
+ * Exercise 13.25: Assume we want to define a version of StrBlob that acts like
+ * a value. Also assume that we want to continue to use a shared_ptr so that our
+ * StrBlobPtr class can still use a weak_ptr to the vector. Your revised class
+ * will need a copy constructor and copy-assignment operator but will not need a
+ * destructor. Explain what the copy constructor and copy-assignment operators
+ * must do. Explain why the class does not need a destructor.
+ */
+
+/*
+ * The copy constructor must create a deep copy of the underlying vector to
+ * maintain value semantics. Each ValueStrBlob should have its own independent
+ * copy of the data. This is achieved by:
+ * - Allocating a new vector (make_shared)
+ * - Copying all elements from source vector (*other.data_)
+ *
+ * The copy-assignment operator must:
+ * 1. Handle self-assignment safely
+ * 2. Provide strong exception safety
+ * 3. Create an independent copy of the data
+ * The implementation uses copy-and-swap which naturally provides these
+ * guarantees
+ *
+ * No destructor is needed because:
+ * - The only resource is the vector managed by shared_ptr
+ * - shared_ptr's destructor will automatically decrement the reference count
+ * - When count reaches 0, it will delete the vector
+ * - No manual resource cleanup is required
+ *
+ * The weak_ptr in StrBlobPtr remains valid because:
+ * - It points to the same shared_ptr managed vector
+ * - Copy operations create new shared_ptrs but don't affect existing ones
+ * - The reference counting mechanism ensures proper lifetime management
+ */

@@ -1,0 +1,29 @@
+/*
+ * Exercise 13.24: What would happen if the version of HasPtr in this section
+ * didn’t define a destructor? What if HasPtr didn’t define the copy
+ * constructor?
+ */
+
+/*
+ * 1. Missing Destructor:
+ *    The compiler would synthesize a desctructor that:
+ *    - Calls destructors for each member
+ *    - For the string* ps member, it would just destroy the pointer (not the
+ *      string it points to)
+ *    Consequences:
+ *    - Memory leak: The dynamically allocated string would never be deleted
+ *    - Each time a HasPtr object is destroyed, it allocated memory would be
+ *      orphaned
+ *    - Program would gradually consume more memory without releasing it.
+ *
+ * 2. Missing Copy Constructor:
+ *    The compiler would synthesize a copy constructor that:
+ *    - Copies each member directly (shallow copy)
+ *    - Copies the pointer ps (not the string it points to)
+ *    Consequences:
+ *    - Multiple objects would point to the same string
+ *    - Undefined behaviour when:
+ *      - One object modifies the string
+ *      - One object is destroyed (deletes the string)
+ *      - Other objects try to use the now-deleted string
+ */

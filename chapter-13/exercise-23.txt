@@ -1,0 +1,21 @@
+/*
+ * Exercise 13.23: Compare the copy-control members that you wrote for the
+ * solutions to the previous section’s exercises to the code presented here. Be
+ * sure you understand the differences, if any, between your code and ours.
+ */
+
+/*
+ * The copy-control members I implemented for the HasPtr class are functionally
+ * equivalent to those presented in the book. Both versions perform a deep copy
+ * of the dynamically allocated string and ensure proper resource management.
+ * However, there are a few stylistic and structural differences.
+ *
+ * My implementation includes a self-assignment check in the copy
+ * assignment operator, which enhances robustness and is generally recommended,
+ * even though the book version omits it.
+ *
+ * Overall, there are no semantic or behavioural differences between the two
+ * implementations regarding copy control. My version adds helpful commentary
+ * and interface enhancements, while the book version remains minimal and
+ * focused.
+ */
