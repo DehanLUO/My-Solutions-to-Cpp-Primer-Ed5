@@ -1,0 +1,25 @@
+/*
+ * Exercise 14.19: Should the class you chose for exercise 7.40 from § 7.5.1 (p.
+ * 291) define the relational operators? If so, implement them. If not, explain
+ * why not.
+ */
+
+/*
+ * The class should NOT define relational operators (<, >, <=, >=) because:
+ * 1. Books lack a natural, universally meaningful ordering
+ * 2. Different contexts require different orderings (title, author, year, etc.)
+ * 3. Relational operators would introduce ambiguity about comparison semantics
+ * 4. ISBNs are unique identifies but do not imply meaningful ordering
+ *
+ * Equality operators(==, !=) are appropriate and already implemented because:
+ * - We can definitively determine if two books have identical attributes
+ * - Useful for existence checks in collections
+ * - Clear, unambigous semantics
+ *
+ * For specific ordering needs, use named comparison function:
+ * - HasSameISBN(), IsBySameAuthor(), IsPublishedBefore(), etc.
+ * - Or use custom comparators with standard algorithms:
+ *   std::sort(books.begin(), books.end(), [](const Book& a, const Book& b) {
+ *     return a.GetTitle() < b.GetTitle();  // sort by title
+ *   })
+ */

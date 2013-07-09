@@ -4,9 +4,19 @@
  * explain why not.
  */
 
-int main() { return 0; }
-
 /*
- * $ g++ -o main chapter-14/exercise-15.cc && ./main
-
+ * Rationale Against Arithmetic Operators for Book Class
+ * 1. Semantic Inappropriateness:
+ *    Books are immutable entities with fixed metadata properties.
+ *    Arithmetic operations lack meaningful interpretation:
+ *    - Book + Book = ? (Concatenation? Merging? Nonsensical)
+ *    - Book * scaler = ? (Scaling page count? Illogical)
+ *    - Book - Book = ? (Difference operation? Undefined)
+ *
+ * 2. Domain Model Integrity
+ *    Core book attributes are invariant:
+ *    - Title: Unique identifier (cannot be modified mathematically)
+ *    - Author: Creative attribution (not quantifiable)
+ *    - ISBN: International standard (arithmetic operations invalid)
+ *    - Publication Year: Historical fact (immutable)
  */

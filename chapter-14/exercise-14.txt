@@ -3,9 +3,36 @@
  * call operator+= rather than the other way around?
  */
 
-int main() { return 0; }
-
 /*
- * $ g++ -o main chapter-14/exercise-14.cc && ./main
-
+ * 1. Semantics of the operators
+ *    - operator+= modifies the left-hand operand in place
+ *    - operator+ conceptually produces a new object (a copy of the left-hand
+ *      operand, then argumented by the right-hand operand).
+ *    So the natural relationship is:
+ *    T operator+(T lhs, const T& rhs){
+ *      lhs += rhs;  // reuse += to implement +
+ *      return lhs;
+ *    }
+ *    This way, operator+ is just "make a copy, then apply +="
+ *
+ * 2. Efficiency
+ *    Implement operator+= in terms of operator+, we have to write something
+ *    like:
+ *    T& operator+=(T& lhs, const T& rhs){
+ *      lhs = lhs + rhs;  // calls operator+ -> makes a copy -> assigns back
+ *      return lhs;
+ *    }
+ *    This is less efficient because:
+ *    - operator+ creates a temporary copy.
+ *    - Then operator= assigns that temporary back to lhs.
+ *    - That means extra construction + assignment.
+ *    By contrast, operator+= works directly on the existing object with no
+ *    extra temporaries, which is more efficient.
+ *
+ * 3. Design convention
+ *    Most C++ libraries implement += as the core operation, then define + in
+ *    terms of it. This ensures:
+ *    - Minimal duplication of logic.
+ *    - The most efficient path is used when the user writers +=.
+ *    - + gets correct behaviour "for free".
  */

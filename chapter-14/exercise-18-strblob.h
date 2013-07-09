@@ -1,11 +1,10 @@
 /*
- * Exercise 14.16: Define equality and inequality operators for your StrBlob
- * (§ 12.1.1, p. 456), StrBlobPtr (§ 12.1.6, p. 474), StrVec (§ 13.5, p. 526),
- * and String (§ 13.5, p. 531) classes.
+ * Exercise 14.18: Define relational operators for your StrBlob, StrBlobPtr,
+ * StrVec, and String classes.
  */
 
-#ifndef CHAPTER_14_EXERCISE_16_STRBLOB_H_
-#define CHAPTER_14_EXERCISE_16_STRBLOB_H_
+#ifndef CHAPTER_14_EXERCISE_18_STRBLOB_H_
+#define CHAPTER_14_EXERCISE_18_STRBLOB_H_
 
 #include <cctype>            // size_t
 #include <initializer_list>  // std::initializer_list
@@ -44,6 +43,50 @@ class StrBlob {
    * @return True if StrBlobs have different content
    */
   friend bool operator!=(const StrBlob& lhs, const StrBlob& rhs);
+
+  /**
+   * @brief Less-than comparison for StrBlob objects
+   * @param lhs Left-hand side StrBlob
+   * @param rhs Right-hand side StrBlob
+   * @return True if lhs should be ordered before rhs lexicographically
+   * @note Delegates to the underlying vector's less-than operator
+   * @TimeComplexity O(n) where n is the number of elements
+   * @SpaceComplexity O(1)
+   */
+  friend bool operator<(const StrBlob& lhs, const StrBlob& rhs);
+
+  /**
+   * @brief Greater-than comparison for StrBlob objects
+   * @param lhs Left-hand side StrBlob
+   * @param rhs Right-hand side StrBlob
+   * @return True if lhs should be ordered after rhs lexicographically
+   * @note Implemented in terms of less-than operator (rhs < lhs)
+   * @TimeComplexity O(n) where n is the number of elements
+   * @SpaceComplexity O(1)
+   */
+  friend bool operator>(const StrBlob& lhs, const StrBlob& rhs);
+
+  /**
+   * @brief Greater-than-or-equal comparison for StrBlob objects
+   * @param lhs Left-hand side StrBlob
+   * @param rhs Right-hand side StrBlob
+   * @return True if lhs is not less than rhs
+   * @note Implemented in terms of less-than operator
+   * @TimeComplexity O(n) where n is the number of elements
+   * @SpaceComplexity O(1)
+   */
+  friend bool operator>=(const StrBlob& lhs, const StrBlob& rhs);
+
+  /**
+   * @brief Less-than-or-equal comparison for StrBlob objects
+   * @param lhs Left-hand side StrBlob
+   * @param rhs Right-hand side StrBlob
+   * @return True if lhs is not greater than rhs
+   * @note Implemented in terms of less-than operator (rhs < lhs)
+   * @TimeComplexity O(n) where n is the number of elements
+   * @SpaceComplexity O(1)
+   */
+  friend bool operator<=(const StrBlob& lhs, const StrBlob& rhs);
 
  public:
   // Type alias for vector size type
@@ -217,6 +260,57 @@ class StrBlobPtr {
    */
   friend bool operator!=(const StrBlobPtr& lhs, const StrBlobPtr& rhs);
 
+  /**
+   * @brief Less-than comparison for StrBlobPtr objects
+   * @param lhs Left-hand side StrBlobPtr
+   * @param rhs Right-hand side StrBlobPtr
+   * @return True if lhs should be ordered before rhs
+   *
+   * Comparison logic:
+   * 1. Both expired pointers are considered equal (neither is less than the
+   *    other)
+   * 2. An expired pointer is considered less than a valid pointer
+   * 3. Pointers to different vectors are compared by vector address
+   * 4. Pointers to the same vector are compared by current position
+   *
+   * @TimeComplexity O(1)
+   * @SpaceComplexity O(1)
+   */
+  friend bool operator<(const StrBlobPtr& lhs, const StrBlobPtr& rhs);
+
+  /**
+   * @brief Greater-than comparison for StrBlobPtr objects
+   * @param lhs Left-hand side StrBlobPtr
+   * @param rhs Right-hand side StrBlobPtr
+   * @return True if lhs should be ordered after rhs
+   * @note Implemented in terms of less-than operator (rhs < lhs)
+   * @TimeComplexity O(1)
+   * @SpaceComplexity O(1)
+   */
+  friend bool operator>(const StrBlobPtr& lhs, const StrBlobPtr& rhs);
+
+  /**
+   * @brief Greater-than-or-equal comparison for StrBlobPtr objects
+   * @param lhs Left-hand side StrBlobPtr
+   * @param rhs Right-hand side StrBlobPtr
+   * @return True if lhs is not less than rhs
+   * @note Implemented in terms of less-than operator
+   * @TimeComplexity O(1)
+   * @SpaceComplexity O(1)
+   */
+  friend bool operator>=(const StrBlobPtr& lhs, const StrBlobPtr& rhs);
+
+  /**
+   * @brief Less-than-or-equal comparison for StrBlobPtr objects
+   * @param lhs Left-hand side StrBlobPtr
+   * @param rhs Right-hand side StrBlobPtr
+   * @return True if lhs is not greater than rhs
+   * @note Implemented in terms of less-than operator (rhs < lhs)
+   * @TimeComplexity O(1)
+   * @SpaceComplexity O(1)
+   */
+  friend bool operator<=(const StrBlobPtr& lhs, const StrBlobPtr& rhs);
+
  public:
   /**
    * @brief Default constructor
@@ -369,6 +463,22 @@ inline bool operator!=(const StrBlob& lhs, const StrBlob& rhs) {
   return !(lhs == rhs);
 }
 
+inline bool operator<(const StrBlob& lhs, const StrBlob& rhs) {
+  return *lhs.data_ < *rhs.data_;
+}
+
+inline bool operator>(const StrBlob& lhs, const StrBlob& rhs) {
+  return rhs < lhs;
+}
+
+inline bool operator>=(const StrBlob& lhs, const StrBlob& rhs) {
+  return !(lhs < rhs);
+}
+
+inline bool operator<=(const StrBlob& lhs, const StrBlob& rhs) {
+  return !(rhs < lhs);
+}
+
 inline bool operator==(const StrBlobPtr& lhs, const StrBlobPtr& rhs) {
   auto left_ptr = lhs.wptr_.lock();
   auto right_ptr = rhs.wptr_.lock();
@@ -387,4 +497,34 @@ inline bool operator!=(const StrBlobPtr& lhs, const StrBlobPtr& rhs) {
   return !(lhs == rhs);
 }
 
-#endif  // CHAPTER_14_EXERCISE_16_STRBLOB_H_
+inline bool operator<(const StrBlobPtr& lhs, const StrBlobPtr& rhs) {
+  auto left_ptr = lhs.wptr_.lock();
+  auto right_ptr = rhs.wptr_.lock();
+
+  // Both expired pointer are considered euqal
+  if (!left_ptr && !right_ptr) return false;
+
+  // If one is expored and the orther is not, the expored one is considered less
+  if (!left_ptr) return true;
+  if (!right_ptr) return false;
+
+  // If they point to different vectors, compare vector addresses
+  if (left_ptr != right_ptr) return left_ptr < right_ptr;
+
+  // If they point to the same vector, compare positions
+  return lhs.curr_ < rhs.curr_;
+}
+
+inline bool operator>(const StrBlobPtr& lhs, const StrBlobPtr& rhs) {
+  return rhs < lhs;
+}
+
+inline bool operator>=(const StrBlobPtr& lhs, const StrBlobPtr& rhs) {
+  return !(lhs < rhs);
+}
+
+inline bool operator<=(const StrBlobPtr& lhs, const StrBlobPtr& rhs) {
+  return !(rhs < lhs);
+}
+
+#endif  // CHAPTER_14_EXERCISE_18_STRBLOB_H_
