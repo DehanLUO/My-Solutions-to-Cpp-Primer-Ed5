@@ -5,9 +5,21 @@
  * your new move-assignment operator versus the copy-and-swap version.
  */
 
-int main() { return 0; }
+#include "exercise-53.h"  // HasPtr
+
+int main() {
+  HasPtr hp, hp2;
+
+  hp = hp2;
+
+  hp = std::move(hp2);
+}
 
 /*
  * $ g++ -o main chapter-13/exercise-53.cc && ./main
-
+ * HasPtr(const std::string& s = std::string())
+ * HasPtr(const std::string& s = std::string())
+ * HasPtr& operator=(const HasPtr& rhs)
+ * HasPtr& operator=(HasPtr&& rhs)
+ * ==> Executing swap between "" and ""
  */

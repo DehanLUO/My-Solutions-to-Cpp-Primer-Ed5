@@ -1,12 +1,15 @@
 /*
- * Exercise 13.50: Put print statements in the move operations in your String
- * class and rerun the program from exercise 13.48 in § 13.6.1 (p. 534) that
- * used a vector<String> to see when the copies are avoided.
+ * Exercise 13.47: Give the copy constructor and copy-assignment operator in
+ * your String class from exercise 13.44 in § 13.5 (p. 531) a statement that
+ * prints a message each time the function is executed.
  */
+
+#ifndef CHAPTER_13_EXERCISE_47_H_
+#define CHAPTER_13_EXERCISE_47_H_
 
 #include <cstdint>   // UINT32_MAX
 #include <cstring>   // std::memcpy
-#include <iostream>  // std::ostream
+#include <iostream>  // std::ostream, std::cout
 #include <memory>    // std::allocator, std::allocator_traits
 #include <utility>   // std::move
 
@@ -50,7 +53,6 @@ class String {
    */
   String()
       : size_(0), capacity_(kMinCap), data_(alloc_.allocate(capacity_ + 1)) {
-    std::cout << "String()\n";
     data_[size_] = '\0';
   }
 
@@ -83,20 +85,6 @@ class String {
   }
 
   /**
-   * @brief Move constructor
-   * @param other Source String to move from
-   * @post Transfers ownership of resources from other
-   * @note noexcept qualified for compatibility with STL containers
-   * Time Complexity O(1)
-   * Space Complexity O(1)
-   */
-  String(String&& other) noexcept
-      : size_(other.size_), capacity_(other.capacity_), data_(other.data_) {
-    std::cout << "String(String&& other) noexcept:" << other << '\n';
-    other.data_ = nullptr;
-  }
-
-  /**
    * @brief Copy assignment operator
    * @param rhs String to copy
    * @return Reference to this object
@@ -105,34 +93,10 @@ class String {
    * @note Strong exception safety guarantee
    */
   String& operator=(const String& rhs) {
-    std::cout << "String& operator=(const String& rhs):" << rhs << '\n';
+    std::cout << "String& operator=(const String& rhs)" << rhs << '\n';
     if (&rhs == this) return *this;
     String temp(rhs);  // Copy construct temporary
     swap(temp);
-    return *this;
-  }
-
-  /**
-   * @brief Move assignment operator
-   * @param rhs Source String to move from
-   * @return Reference to this
-   * @post Transfers ownership of resources from rhs
-   * @note noexcept qualified for compatibility with STL containers
-   * Time Complexity O(1)
-   * Space Complexity O(1)
-   */
-  String& operator=(String&& rhs) noexcept {
-    std::cout << "String& operator=(String&& rhs) noexcept:" << rhs << '\n';
-    if (&rhs == this) return *this;
-
-    deallocate();
-
-    size_ = rhs.size_;
-    capacity_ = rhs.capacity_;
-    data_ = rhs.data_;
-
-    rhs.data_ = nullptr;
-
     return *this;
   }
 
@@ -245,47 +209,9 @@ class String {
 };
 
 constexpr String::size_type String::kMinCap;
+
 String::allocator_type String::alloc_;  // Static member initialization
 
 }  // namespace my
 
-int main() {
-  std::vector<my::String> svec;
-  /*
-   * Each push_back may trigger reallocation when:
-   * - Capacity is exceeded
-   * - Requires element migration to new storage
-   */
-  for (size_t i = 0; i < 5; ++i) {
-    /*
-     * Conversion chain:
-     * 1. std::to_string creates temporary std::string
-     * 2. c_str() provides C-style string pointer
-     * 3. my::String constructor allocates new storage
-     */
-    svec.push_back(std::to_string(i).c_str());
-  }
-
-  return 0;
-}
-
-/*
- * $ g++ -o main chapter-13/exercise-50.cc && ./main
- * String(const_pointer str):0
- * String(String&& other) noexcept:0
- * String(const_pointer str):1
- * String(String&& other) noexcept:1
- * String(String&& other) noexcept:0
- * String(const_pointer str):2
- * String(String&& other) noexcept:2
- * String(String&& other) noexcept:0
- * String(String&& other) noexcept:1
- * String(const_pointer str):3
- * String(String&& other) noexcept:3
- * String(const_pointer str):4
- * String(String&& other) noexcept:4
- * String(String&& other) noexcept:0
- * String(String&& other) noexcept:1
- * String(String&& other) noexcept:2
- * String(String&& other) noexcept:3
- */
+#endif  // CHAPTER_13_EXERCISE_47_H_
