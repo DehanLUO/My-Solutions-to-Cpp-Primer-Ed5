@@ -10,9 +10,10 @@
  *     }
  */
 
-int main() { return 0; }
-
 /*
- * $ g++ -o main chapter-14/exercise-11.cc && ./main
-
+ * The extraction sequence incorrectly parse malformed input like "10 24.95
+ * 0-210-99999-9" because:
+ * - bookNo captures "10" (should reject non-ISBN formats)
+ * - units_sold takes 24 from "24.95" (silently truncating decimal)
+ * - price reads ".95" (valid float but semantically wrong)
  */

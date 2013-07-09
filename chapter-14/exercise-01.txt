@@ -1,0 +1,47 @@
+/*
+ * Exercise 14.1: In what ways does an overloaded operator differ from a
+ * built-in operator? In what ways are overloaded operators the same as the
+ * built-in operators?
+ */
+
+/*
+ * Differences Between Overloaded and Built-In Operators:
+ * 1. Operand Types:
+ *    - Built-in: Work with fundamental types (int, float, etc.)
+ *    - Overloaded: Work with user-defined types (classes)
+ * 2. Operator Precedence:
+ *    - Built-in: Fixed by language standard
+ *    - Overloaded: Retain original precedence but can't change it
+ * 3. Short-Circuit Evaluation:
+ *    - Built-in: && and || short-circuit
+ *    - Overloaded: Always evaluate both operands
+ * 4. Default Implementations:
+ *    - Built-in: Always available
+ *    - Overloaded: Must be explicitly defined
+ * 5. Member Access:
+ *    - Built-in: . (dot), ::, ?: can't be overloaded
+ *    - Overloaded: Limited to specific operators
+ * 6. Implicit Conversions:
+ *    - Built-in: Apply standard conversions
+ *    - Overloaded: Only use defined conversions
+ */
+
+/*
+ * Similarities Between Overloaded and Built-In Operators:
+ * 1. Syntax:
+ *    - Same operator symbols (+, -, ==, etc.)
+ *    - Same infix/prefix/postfix notation
+ * 2. Arity:
+ *    - Maintain same number of operands
+ *      (binary operators stay binary, unary stay unary)
+ * 3. Associativity:
+ *    - Retain original directionality
+ *      (e.g., = remains right-to-left)
+ * 4. Basic Semantics:
+ *    - Expected to follow conventional meanings
+ *      (+ should add, == should compare equivalency)
+ * 5. Operator Lookup:
+ *    - Both participate in overload resolution
+ * 6. Return Types:
+ *    - Can return any type (like built-ins return fundamentals)
+ */
