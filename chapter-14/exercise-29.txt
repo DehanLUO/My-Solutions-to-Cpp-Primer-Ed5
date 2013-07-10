@@ -1,0 +1,14 @@
+/*
+ * Exercise 14.29: We did not define a const version of the increment and
+ * decrement operators. Why not?
+ */
+
+/*
+ * Increment/decrement operators modify the object's state:
+ * - ++ptr changes ptr.curr_
+ * - --ptr changes ptr.curr_
+ *
+ * const member functions cannot modify object state:
+ * - const qualifier promises no state modification
+ * - Increment/decrement inherently violate this promise
+ */

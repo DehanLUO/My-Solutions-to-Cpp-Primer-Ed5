@@ -1,0 +1,27 @@
+/*
+ * Exercise 14.31: Our StrBlobPtr class does not define the copy constructor,
+ * assignment operator, or a destructor. Why is that okay?
+ */
+
+/*
+ * Rule of Zero Compliance
+ * 1. Implicit Special Members are Sufficient:
+ *    - std::weak_ptr (manages its own lifetime)
+ *    - std::size_t (trivially copyable)
+ *    The compiler-generated special members are:
+ *    1. Copy constructor: Member-wise copy (safe)
+ *    2. Copy assignment: Member-wise assignment (safe)
+ *    3. Destructor: Member-wise destruction (safe)
+ *    No manual resource management needed
+ *
+ * 2. weak_ptr Semantics:
+ *    - Does not affect reference count of managed object
+ *    - Safe to copy and assign
+ *    - Automatically becomes expired when shared_ptr is destroyed
+ *    - No memory management responsibilities for StrBlobPtr
+ *
+ * 3. size_t Semantics:
+ *    - Fundamental arithmetic type
+ *    - Trivially copyable and destructible
+ *    - No special cleanup required
+ */
