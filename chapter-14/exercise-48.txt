@@ -1,0 +1,29 @@
+/*
+ * Exercise 14.48: Determine whether the class you used in exercise 7.40 from
+ * § 7.5.1 (p. 291) should have a conversion to bool. If so, explain why, and
+ * explain whether the operator should be explicit. If not, explain why not.
+ */
+
+/*
+ * Book should have a conversion to bool.
+ * 1. Natural Boolean Context:
+ *    - Books often need to be checked for validity/emptiness
+ *    - if (book) is more natural than if (book.IsValid())
+ *    - while (library.GetNextBook()) is intuitive
+ * 2. Standard Library Compatibility:
+ *    - Works well with algorithms that check for "truthy" values
+ *    - Can be used in conditional statements naturally
+ * 3. Semantic Meaning:
+ *    - A Book object can meaningfully represent validity state
+ *    - Default-constructed books are "false" (invalid/empty)
+ *    - Properly constructed books are "true" (valid)
+ *
+ * The operator should be explicit
+ * 1. Prevents Unintended Conversions:
+ *    - Avoids implicit conversion to int in arithmetic expressions
+ *    - Prevents book + 5 from compiling (which would be nonsense)
+ * 2. Maintains Type Safety:
+ *    - Requires explicit static_cast<bool> when conversion is intended
+ *    - if (book) still works due to contextually conversion to bool
+ *    - explicit operator bool still works in if/while/for contexts
+ */
