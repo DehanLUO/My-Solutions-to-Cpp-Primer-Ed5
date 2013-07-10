@@ -1,0 +1,31 @@
+/*
+ * Exercise 15.12: Is it ever useful to declare a member function as both
+ * override and final? Why or why not?
+ */
+
+/*
+ * override + final is USEFUL
+ *
+ * SCENARIO 1: DESIGN INTENT CLARITY
+ *   Using both specifiers clearly communicates:
+ *   - This function overrides a base virtual function (override)
+ *   - This implementation should be the final one in the hierarchy (final)
+ *
+ * SCENARIO 2: FRAMEWORK AND LIBRARY DESIGN
+ *   Library authors can provide base classes where:
+ *   - Certain functions are meant to be overridden once
+ *   - But should not be modified further by end users
+ *   - Example: Template method pattern implementations
+ *
+ * SCENARIO 3: CRITICAL FUNCTIONALITY PRESERVATION
+ *   When a function implements critical behavior that:
+ *   - Must work exactly as implemented
+ *   - Should not be altered by derived classes
+ *   - Example: Security checks, resource management
+ *
+ * SCENARIO 4: PERFORMANCE OPTIMIZATION
+ *   Final functions can enable compiler optimizations:
+ *   - Devirtualization opportunities
+ *   - Inlining of function calls
+ *   - Better code generation for critical paths
+ */

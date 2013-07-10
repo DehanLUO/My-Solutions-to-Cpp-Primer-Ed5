@@ -1,0 +1,9 @@
+/*
+ * Exercise 15.20: Write code to test your answers to the previous two
+ * exercises.
+ */
+
+/*
+ * $ g++ -o main chapter-15/exercise-18.cc && ./main
+ * $ g++ -o main chapter-15/exercise-19.cc && ./main
+ */

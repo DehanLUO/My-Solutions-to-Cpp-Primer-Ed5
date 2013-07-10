@@ -1,0 +1,52 @@
+/*
+ * Exercise 15.21: Choose one of the following general abstractions containing a
+ * family of types (or choose one of your own). Organize the types into an
+ * inheritance hierarchy:
+ *     (a) Graphical file formats (such as gif, tiff, jpeg, bmp)
+ *     (b) Geometric primitives (such as box, circle, sphere, cone)
+ *     (c) C++ language types (such as class, function, member function)
+ */
+
+class GeometricPrimitive;
+
+/**
+ * @class Shape2D
+ * @brief Abstract base class for two-dimensional geometric primitives
+ * @note Specializes interface for 2D shapes (no volume)
+ */
+class Shape2D /* : public GeometricPrimitive*/;
+
+/**
+ * @class Shape3D
+ * @brief Abstract base class for three-dimensional geometric primitives
+ * @note Specializes interface for 3D shapes with volume
+ */
+class Shape3D /* : public GeometricPrimitive*/;
+
+/**
+ * @class Circle
+ * @brief Concrete class representing a circle
+ * @note Derived from Shape2D with radius parameter
+ */
+class Circle /* : public Shape2D */;
+
+/**
+ * @class Box
+ * @brief Concrete class representing a rectangular box (3D)
+ * @note Derived from Shape3D with length, width, height parameters
+ */
+class Box /* : public Shape3D */;
+
+/**
+ * @class Sphere
+ * @brief Concrete class representing a sphere
+ * @note Derived from Shape3D with radius parameter
+ */
+class Sphere /* : public Shape3D */;
+
+/**
+ * @class Cone
+ * @brief Concrete class representing a right circular cone
+ * @note Derived from Shape3D with radius and height parameters
+ */
+class Cone /* : public Shape3D */;
