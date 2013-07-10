@@ -1,0 +1,12 @@
+/*
+ * Exercise 14.33: How many operands may an overloaded function-call operator
+ * take?
+ */
+
+/*
+ * The function-call operator: operator()
+ * - Must be a non-static member function
+ * - Can take any number of parameters (0 to N)
+ * - No upper limit imposed by c++ standard
+ * - Practical limits from compiler/architecture
+ */
