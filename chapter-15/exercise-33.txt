@@ -1,0 +1,25 @@
+/*
+ * Exercise 15.33: What about objects of type Query_base?
+ */
+
+/*
+ * NO EXPLICIT COPY/MOVE OPERATIONS DECLARED
+ * Compiler will generate default versions:
+ * - QueryBase(const QueryBase&) = default;
+ * - QueryBase(QueryBase&&) = default;
+ * - QueryBase& operator=(const QueryBase&) = default;
+ * - QueryBase& operator=(QueryBase&&) = default;
+ *
+ * QueryBase class properties:
+ * - Abstract base class (has pure virtual functions)
+ * - No data members
+ * - No explicit copy/move operations declared
+ * - Uses compiler-generated default operations
+ * - Virtual destructor for polymorphic cleanup
+ * Since QueryBase has no data members:
+ * - Copy construction: Nothing happens (no members to copy)
+ * - Move construction: Nothing happens (no members to move)
+ * - Copy assignment: Nothing happens (no members to assign)
+ * - Move assignment: Nothing happens (no members to move)
+ * - Destruction: Nothing happens (no resources to release)
+ */

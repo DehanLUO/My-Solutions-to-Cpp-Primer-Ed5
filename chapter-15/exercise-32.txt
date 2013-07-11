@@ -1,0 +1,13 @@
+/*
+ * Exercise 15.32: What happens when an object of type Query is copied, moved,
+ * assigned, and destroyed?
+ */
+
+/*
+ * Query class uses compiler-generated default operations:
+ * - Copy constructor: shares ownership via shared_ptr copy
+ * - Move constructor: transfers ownership via shared_ptr move
+ * - Copy assignment: shares ownership, may release previous
+ * - Move assignment: transfer ownership, may release previous
+ * - Destructor: decreases reference count, may destroy object
+ */

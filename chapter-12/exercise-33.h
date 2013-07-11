@@ -64,6 +64,12 @@ class TextQuery {
 class QueryResult {
   friend std::ostream& PrintResults(std::ostream&, const QueryResult&);
 
+  // for ../chapter-15/exercise-42.cc
+  friend std::ostream& PrintResultsInRange(std::ostream& ostream,
+                                           const QueryResult& query_result,
+                                           TextQuery::LineNo begin,
+                                           TextQuery::LineNo end);
+
  public:
   // Iterator types for line numbers
   using Iterator = std::set<TextQuery::LineNo>::iterator;

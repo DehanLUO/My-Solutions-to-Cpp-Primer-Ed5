@@ -6,9 +6,61 @@
  *     OrQuery c = Query("fiery") & Query("bird");
  */
 
-int main() { return 0; }
-
 /*
- * $ g++ -o main chapter-15/exercise-38.cc && ./main
-
+ *              +------------------+
+ *              |   Query_base     |  (Abstract)
+ *              |------------------|
+ *              | + eval() = 0     |
+ *              | + rep()  = 0     |
+ *              +------------------+
+ *                      ▲
+ *                      |
+ *     ---------------------------------------------
+ *     |                        |                  |
+ * +-----------+         +---------------+   +---------------+
+ * | WordQuery |         |  BinaryQuery  |   |  NotQuery     |
+ * |-----------|         |---------------|   |---------------|
+ * | word      |         | lhs, rhs      |   | query         |
+ * | eval()    |         | rep() (impl.) |   | eval()        |
+ * | rep()     |         | (virtual eval)|   | rep()         |
+ * +-----------+         +---------------+   +---------------+
+ *                              ▲
+ *                -------------------------------
+ *                |                             |
+ *         +---------------+             +---------------+
+ *         |   AndQuery    |             |   OrQuery     |
+ *         |---------------|             |---------------|
+ *         |eval()         |             | eval()        |
+ *         +---------------+             +---------------+
+ *
+ *
+ *                    +------------------+
+ *                    |      Query       |   (instance)
+ *                    |------------------|
+ *                    | shared_ptr<      |
+ *                    |   Query_base >   |
+ *                    +------------------+
  */
+
+#include "exercise-35-query.h"
+
+int main() {
+  /*
+   * Illegal
+   * BinaryQuery is an abstract base class (has pure virtual functions)
+   * - Cannot instantiate abstract classes
+   * - BinaryQuery::rep() is pure virtual in the actual implementation
+   */
+  // BinaryQuery a = Query("fiery") & Query("bird");
+
+  /*
+   * Illegal
+   * operator& returns Query, not BinaryQuery
+   * - Query("fiery") & Query("bird") returns a Query object
+   * - Query cannot be converted to BinaryQuery
+   */
+  // AndQuery b = Query("fiery") & Query("bird");
+  // OrQuery c = Query("fiery") & Query("bird");
+
+  return 0;
+}

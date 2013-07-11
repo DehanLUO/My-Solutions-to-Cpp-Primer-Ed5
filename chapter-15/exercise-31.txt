@@ -1,0 +1,51 @@
+/*
+ * Exercise 15.31: Given that s1, s2, s3, and s4 are all strings, determine what
+ * objects are created in the following expressions:
+ *     (a) Query(s1) | Query(s2) & ~ Query(s3);
+ *     (b) Query(s1) | (Query(s2) & ~ Query(s3));
+ *     (c) (Query(s1) & (Query(s2)) | (Query(s3) & Query(s4)));
+ */
+
+/*
+ * EXPRESSION (a): Query(s1) | Query(s2) & ~ Query(s3)
+ * Operator precedence: ~ (highest), then &, then |
+ * Evaluation order:
+ * 1. Query(s3) -> Creates WordQuery for s3
+ * 2. ~Query(s3) -> Creates NotQuery containing WordQuery
+ * 3. Query(s2) -> Creates WOrdQuery for s2
+ * 4. Query(s2) & ~Query(s3) -> Creates AndQuery
+ * 5. Query(s1) -> Creates WordQuery for s1
+ * 6. Query(s1) | (Query(s2) & ~Query(s3)) -> Creates OrQuery
+ * TOTAL OBJECTS CREATED for (a):
+ * - 3 WordQuery objects (s1, s2, s3)
+ * - 1 NotQuery object
+ * - 1 AndQuery object
+ * - 1 OrQuery object
+ * - Total: 6 query objects
+ */
+
+/*
+ * EXPRESSION (b): Query(s1) | (Query(s2) & ~ Query(s3))
+ *
+ * This is equivalent to expression (a) due to operator precedence.
+ * The parentheses are redundant but make the evaluation order explicit.
+ * Same object creation as expression (a).
+ */
+
+/*
+ * EXPRESSION (c): (Query(s1) & Query(s2)) | (Query(s3) & Query(s4))
+ *
+ * Evaluation order:
+ * 1. Query(s1) -> Creates WordQuery for s1
+ * 2. Query(s2) -> Creates WordQuery for s2
+ * 3. Query(s1) & Query(s2) -> Creates AndQuery
+ * 4. Query(s3) -> Creates WordQuery for s3
+ * 5. Query(s4) -> Creates WordQuery for s4
+ * 6. Query(s3) & Query(s4) -> Creates AndQuery
+ * 7. (AndQuery1) | (AndQuery2) -> Creates OrQuery
+ * TOTAL OBJECTS CREATED for (c):
+ * - 4 WordQuery objects (s1, s2, s3, s4)
+ * - 2 AndQuery objects
+ * - 1 OrQuery objects
+ * - Total: 7 query objects
+ */

@@ -1,0 +1,47 @@
+/*
+ * Exercise 15.37: What changes would your classes need if the derived classes
+ * had members of type shared_ptr<Query_base> rather than of type Query?
+ */
+
+/*
+ * Current approach (with Query)
+ * - Derived classes store Query lhs, rhs;
+ * - Query itself wraps a shared_ptr<QueryBase>
+ * Benefits:
+ * - Simplifies client code (value semantics)
+ * - Encapsulates memory management
+ * - Uniform interface through rep() and eval()
+ *
+ * If derved classes directly used shared_ptr<QueryBase>
+ *   class AndQuery: public BinaryQuery {
+ *     AndQuery(shared_ptr<QueryBase> left,
+ *              shared_ptr<QueryBase> right)
+ *       : BinaryQuery(left, right "&") {}
+ *   };
+ * Consequences:
+ * - No Query wrapper to provide value semantics.
+ * - Constructors and operator overloads (operator&, operator|, operator~) must
+ *   work directly with shared_ptr<QueryBase>
+ * - Users of the library would have to manage shared_ptr explicitly instead of
+ *   using the cleaner Query interface
+ *
+ * Required Changes
+ * 1. Constructors
+ * - Now: AndQuery(const Query&, const Query&)
+ * - After change: AndQuery(const shared_ptr<QueryBase>&,
+ *                          const shared_ptr<QueryBase>&)
+ * 2. Data members
+ * - Now: Query lhs, rhs;
+ * - After change: shared_ptr<QueryBase> lhs, rhs;
+ * 3. Operator overloads
+ * - Currently return Query objects
+ * - After change they would need to return shared_ptr<QueryBase> or rely on
+ *   make_shared<AndQuery>()
+ * 4. Client code
+ * - Now:
+ *   Query q = Query("a") & Query("b")
+ * - After change:
+ *   auto q = make_shared<AndQuery>(
+ *              make_shared_ptr<WordQuery>("a"),
+ *              make_shared_ptr<WordQuery>("b"));
+ */
