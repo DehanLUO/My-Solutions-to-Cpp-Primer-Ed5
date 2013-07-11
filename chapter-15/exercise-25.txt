@@ -1,0 +1,32 @@
+/*
+ * Exercise 15.25: Why did we define a default constructor for Disc_quote? What
+ * effect, if any, would removing that constructor have on the behavior of
+ * Bulk_quote?
+ */
+
+/*
+ * 1. WHY DEFAULT CONSTRUCTOR IS NEEDED:
+ * a) DERIVED CLASS DEFAULT CONSTRUCTION:
+ *    - BulkQuote default constructor requires DiscQuote default constructor
+ *    - Derived classes must initialize their base classes
+ *    - Without default constructor, BulkQuote() would not compile
+ * b) CONTAINER USAGE AND OBJECT CREATION:
+ *    - Default construction enables use in containers:
+ *      std::vector<BulkQuote> quotes(10); // Needs default constructor
+ *    - Allows array creation and default initialization
+ * c) SERIALIZATION AND FACTORY PATTERNS:
+ *    - Objects may be created before their data is available
+ *    - Default construction followed by assignment is common
+ *    - Enables flexible object creation patterns
+ *
+ * 2. IMPACT ON BulkQuote BEHAVIOR:
+ * a) COMPILATION ERRORS:
+ *    - BulkQuote default constructor would not compile
+ *    - Any attempt to default-construct BulkQuote would fail
+ * b) CONTAINER LIMITATIONS:
+ *    - Could not use BulkQuote in std::vector without default constructor
+ *    - std::vector<BulkQuote> would require explicit initialization
+ * c) REDUCED FLEXIBILITY:
+ *    - Would force all BulkQuote objects to be parameterized
+ *    - Eliminates possibility of default-initialized objects
+ */

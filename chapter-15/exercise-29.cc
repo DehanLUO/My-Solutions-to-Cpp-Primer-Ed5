@@ -5,9 +5,97 @@
  * why there isn’t one.
  */
 
-int main() { return 0; }
+/*
+ * COMPARISON WITH EXERCISE 15.28 RESULTS:
+ * Exercise 15.28 (Object Slicing) produced INCORRECT results:
+ * - Item 1: $600.00 (should be $540.00 - 10% discount for 12 units)
+ * - Item 2: $180.00 (should be $153.00 - 15% discount for 6 units) 
+ * - Item 3: $250.00 (should be $200.00 - 20% discount for 10 units)
+ * - Total: $1030.00 (INCORRECT)
+ * Exercise 15.29 (Smart Pointers) produces CORRECT results:
+ * - Item 1: $540.00 (correct 10% discount)
+ * - Item 2: $153.00 (correct 15% discount)
+ * - Item 3: $200.00 (correct 20% discount)
+ * - Total: $893.00 (CORRECT)
+ *
+ * TECHNICAL EXPLANATION OF THE DIFFERENCE:
+ * Why smart pointers work correctly:
+ * 1. No Object Slicing: shared_ptr<Quote> stores pointers, not objects
+ * 2. Polymorphism Preserved: Virtual function dispatch works correctly
+ * 3. Derived Data Intact: BulkQuote members (min_quantity_, discount_) are
+ *    preserved
+ * 4. Correct Function Calls: BulkQuote::NetPrice() called with proper data
+ */
+
+#include <iostream>  // std::cout
+#include <memory>    // std::shared_ptr
+#include <vector>    // std::vector
+
+#include "exercise-26-bulkquote.h"  // BulkQuote
+#include "exercise-26-quote.h"      // Quote
+
+int main() {
+  std::vector<std::shared_ptr<Quote>> quote_vector;
+
+  // Add BulkQuote objects to vector<Quote> - OBJECT SLICING OCCURS HERE
+  std::cout << "Adding BulkQuote objects to vector<Quote>...\n";
+  quote_vector.push_back(  // 10% discount for 10+ units
+      std::make_shared<BulkQuote>("978-1234567890", 50.0, 10, 0.1));
+  quote_vector.push_back(  // 15% discount for 5+ units
+      std::make_shared<BulkQuote>("978-9876543210", 30.0, 5, 0.15));
+  quote_vector.push_back(  // 20% discount for 8+ units
+      std::make_shared<BulkQuote>("978-5555555555", 25.0, 8, 0.2));
+
+  // CALCULATING TOTAL NET PRICE
+
+  std::size_t quantities[] = {12, 6, 10};  // Test quantities for each item
+  double total_net_price = 0.0;
+
+  for (std::size_t i = 0; i < quote_vector.size(); ++i) {
+    double item_price = quote_vector[i]->NetPrice(quantities[i]);
+    total_net_price += item_price;
+
+    std::cout << "Item " << i + 1 << " (ISBN: " << quote_vector[i]->ISBN()
+              << "):\n"                                   //
+              << "  Quantity: " << quantities[i] << "\n"  //
+              << "  Net Price: $" << item_price << "\n";
+  }
+
+  std::cout << "TOTAL NET PRICE: $" << total_net_price << "\n\n";
+
+  return 0;
+}
 
 /*
  * $ g++ -o main chapter-15/exercise-29.cc && ./main
-
+ * Adding BulkQuote objects to vector<Quote>...
+ * Quote(const std::string& 978-1234567890, double 50) called
+ * DiscQuote(const std::string& 978-1234567890, double 50, std::size_t 10, double 0.1) called
+ * BulkQuote(const std::string& 978-1234567890, double 50, std::size_t 10, double 0.1) called
+ * Quote(const std::string& 978-9876543210, double 30) called
+ * DiscQuote(const std::string& 978-9876543210, double 30, std::size_t 5, double 0.15) called
+ * BulkQuote(const std::string& 978-9876543210, double 30, std::size_t 5, double 0.15) called
+ * Quote(const std::string& 978-5555555555, double 25) called
+ * DiscQuote(const std::string& 978-5555555555, double 25, std::size_t 8, double 0.2) called
+ * BulkQuote(const std::string& 978-5555555555, double 25, std::size_t 8, double 0.2) called
+ * Item 1 (ISBN: 978-1234567890):
+ *   Quantity: 12
+ *   Net Price: $540
+ * Item 2 (ISBN: 978-9876543210):
+ *   Quantity: 6
+ *   Net Price: $153
+ * Item 3 (ISBN: 978-5555555555):
+ *   Quantity: 10
+ *   Net Price: $200
+ * TOTAL NET PRICE: $893
+ *
+ * ~BulkQuote() called
+ * ~DiscQuote() called
+ * ~Quote() called
+ * ~BulkQuote() called
+ * ~DiscQuote() called
+ * ~Quote() called
+ * ~BulkQuote() called
+ * ~DiscQuote() called
+ * ~Quote() called
  */
